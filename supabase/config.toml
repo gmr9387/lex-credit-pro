@@ -1,1 +1,4 @@
 project_id = "nxnyduoraxypbvmvbija"
+
+[functions.generate-dispute-letter]
+verify_jwt = true

@@ -1,10 +1,107 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Check auth state
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session?.user) {
+        navigate("/auth");
+      } else {
+        setUser(session.user);
+      }
+      setLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (!session?.user) {
+          navigate("/auth");
+        } else {
+          setUser(session.user);
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    toast({
+      title: "Signed Out",
+      description: "You have been successfully signed out.",
+    });
+    navigate("/auth");
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+
+    toast({
+      title: "Uploading...",
+      description: "Processing your credit report",
+    });
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('credit-reports')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { error: dbError } = await supabase
+        .from('credit_reports')
+        .insert({
+          user_id: user.id,
+          file_url: fileName,
+          file_name: file.name,
+          status: 'pending',
+        });
+
+      if (dbError) throw dbError;
+
+      toast({
+        title: "Success!",
+        description: "Credit report uploaded successfully",
+      });
+
+    } catch (error: any) {
+      toast({
+        title: "Upload Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Shield className="w-16 h-16 text-primary mx-auto mb-4 animate-pulse" />
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -18,7 +115,10 @@ const Dashboard = () => {
             <Button variant="ghost" asChild>
               <Link to="/">Home</Link>
             </Button>
-            <Button variant="outline">Sign Out</Button>
+            <Button variant="outline" onClick={handleSignOut}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
+            </Button>
           </nav>
         </div>
       </header>
@@ -112,17 +212,26 @@ const Dashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="border-2 border-dashed border-border rounded-lg p-12 text-center hover:border-primary/50 transition-colors cursor-pointer">
-                  <Upload className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Drag & Drop Your Credit Report</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Supports PDF files from Experian, TransUnion, or Equifax
-                  </p>
-                  <Button>
-                    <Upload className="w-4 h-4 mr-2" />
-                    Choose File
-                  </Button>
-                </div>
+                <label htmlFor="file-upload" className="block">
+                  <div className="border-2 border-dashed border-border rounded-lg p-12 text-center hover:border-primary/50 transition-colors cursor-pointer">
+                    <Upload className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">Drag & Drop Your Credit Report</h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Supports PDF files from Experian, TransUnion, or Equifax
+                    </p>
+                    <Button type="button">
+                      <Upload className="w-4 h-4 mr-2" />
+                      Choose File
+                    </Button>
+                  </div>
+                  <input
+                    id="file-upload"
+                    type="file"
+                    className="hidden"
+                    accept=".pdf"
+                    onChange={handleFileUpload}
+                  />
+                </label>
                 
                 <div className="mt-6 p-4 bg-muted/50 rounded-lg">
                   <h4 className="font-medium mb-2 flex items-center gap-2">
@@ -130,7 +239,7 @@ const Dashboard = () => {
                     Your Data is Secure
                   </h4>
                   <p className="text-sm text-muted-foreground">
-                    All files are encrypted with AES-256 and processed locally. Your credit information never leaves your control.
+                    All files are encrypted with AES-256 and processed securely. Your credit information is protected.
                   </p>
                 </div>
               </CardContent>
@@ -156,9 +265,6 @@ const Dashboard = () => {
                   <p className="text-muted-foreground mb-4">
                     Upload a credit report in the Mirror tab to identify disputable items
                   </p>
-                  <Button variant="outline" asChild>
-                    <Link to="#mirror">Go to Credit Mirror</Link>
-                  </Button>
                 </div>
               </CardContent>
             </Card>

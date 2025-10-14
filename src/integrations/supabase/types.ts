@@ -14,7 +14,199 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      credit_reports: {
+        Row: {
+          analysis_data: Json | null
+          bureau: string | null
+          current_score: number | null
+          file_name: string | null
+          file_url: string | null
+          id: string
+          status: string | null
+          uploaded_at: string
+          user_id: string
+        }
+        Insert: {
+          analysis_data?: Json | null
+          bureau?: string | null
+          current_score?: number | null
+          file_name?: string | null
+          file_url?: string | null
+          id?: string
+          status?: string | null
+          uploaded_at?: string
+          user_id: string
+        }
+        Update: {
+          analysis_data?: Json | null
+          bureau?: string | null
+          current_score?: number | null
+          file_name?: string | null
+          file_url?: string | null
+          id?: string
+          status?: string | null
+          uploaded_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      disputes: {
+        Row: {
+          bureau: string
+          created_at: string
+          id: string
+          item_id: string | null
+          letter_content: string
+          outcome: string | null
+          response_date: string | null
+          response_deadline: string | null
+          round_number: number | null
+          sent_date: string | null
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bureau: string
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          letter_content: string
+          outcome?: string | null
+          response_date?: string | null
+          response_deadline?: string | null
+          round_number?: number | null
+          sent_date?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bureau?: string
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          letter_content?: string
+          outcome?: string | null
+          response_date?: string | null
+          response_deadline?: string | null
+          round_number?: number | null
+          sent_date?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disputes_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "flagged_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flagged_items: {
+        Row: {
+          account_name: string
+          account_type: string | null
+          balance: number | null
+          confidence_score: number | null
+          created_at: string
+          date_opened: string | null
+          description: string | null
+          id: string
+          issue_type: string
+          report_id: string
+          user_id: string
+        }
+        Insert: {
+          account_name: string
+          account_type?: string | null
+          balance?: number | null
+          confidence_score?: number | null
+          created_at?: string
+          date_opened?: string | null
+          description?: string | null
+          id?: string
+          issue_type: string
+          report_id: string
+          user_id: string
+        }
+        Update: {
+          account_name?: string
+          account_type?: string | null
+          balance?: number | null
+          confidence_score?: number | null
+          created_at?: string
+          date_opened?: string | null
+          description?: string | null
+          id?: string
+          issue_type?: string
+          report_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flagged_items_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "credit_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          full_name: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      score_snapshots: {
+        Row: {
+          bureau: string | null
+          id: string
+          notes: string | null
+          score: number
+          snapshot_date: string
+          user_id: string
+        }
+        Insert: {
+          bureau?: string | null
+          id?: string
+          notes?: string | null
+          score: number
+          snapshot_date?: string
+          user_id: string
+        }
+        Update: {
+          bureau?: string | null
+          id?: string
+          notes?: string | null
+          score?: number
+          snapshot_date?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
