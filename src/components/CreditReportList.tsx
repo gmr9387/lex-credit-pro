@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Download, AlertCircle } from 'lucide-react';
+import { FileText, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { ReportListSkeleton } from '@/components/ui/skeletons';
 
 interface CreditReport {
   id: string;
@@ -68,7 +69,7 @@ export const CreditReportList = () => {
   };
 
   if (loading) {
-    return <div className="text-muted-foreground">Loading reports...</div>;
+    return <ReportListSkeleton />;
   }
 
   if (reports.length === 0) {

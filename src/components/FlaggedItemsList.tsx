@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AlertCircle, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { FlaggedItemSkeleton } from '@/components/ui/skeletons';
 
 interface FlaggedItem {
   id: string;
@@ -46,7 +47,7 @@ export const FlaggedItemsList = () => {
   };
 
   if (loading) {
-    return <div className="text-muted-foreground">Loading flagged items...</div>;
+    return <FlaggedItemSkeleton />;
   }
 
   if (items.length === 0) {

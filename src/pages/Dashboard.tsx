@@ -4,7 +4,7 @@ import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut, MessageSquare } from "lucide-react";
+import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut, MessageSquare, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { DisputeGenerator } from "@/components/DisputeGenerator";
@@ -17,6 +17,7 @@ import { CreditMentor } from "@/components/CreditMentor";
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [uploadingFile, setUploadingFile] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -56,6 +57,30 @@ const Dashboard = () => {
     const file = event.target.files?.[0];
     if (!file || !user) return;
 
+    // Validate file size (20MB limit)
+    if (file.size > 20 * 1024 * 1024) {
+      toast({
+        title: "File Too Large",
+        description: "File size must be less than 20MB",
+        variant: "destructive",
+      });
+      event.target.value = '';
+      return;
+    }
+
+    // Validate file type
+    if (file.type !== 'application/pdf') {
+      toast({
+        title: "Invalid File Type",
+        description: "Only PDF files are supported",
+        variant: "destructive",
+      });
+      event.target.value = '';
+      return;
+    }
+
+    setUploadingFile(true);
+
     toast({
       title: "Uploading...",
       description: "Processing your credit report",
@@ -65,34 +90,144 @@ const Dashboard = () => {
       const fileExt = file.name.split('.').pop();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
 
+      // Upload file to storage
       const { error: uploadError } = await supabase.storage
         .from('credit-reports')
         .upload(fileName, file);
 
       if (uploadError) throw uploadError;
 
-      const { error: dbError } = await supabase
+      // Create database record
+      const { data: reportData, error: dbError } = await supabase
         .from('credit_reports')
         .insert({
           user_id: user.id,
           file_url: fileName,
           file_name: file.name,
-          status: 'pending',
-        });
+          status: 'analyzing',
+        })
+        .select()
+        .single();
 
       if (dbError) throw dbError;
 
       toast({
-        title: "Success!",
-        description: "Credit report uploaded successfully",
+        title: "Analyzing...",
+        description: "AI is scanning your credit report for errors",
+        duration: Infinity,
       });
 
+      // Parse PDF and analyze with AI
+      try {
+        // Get file for parsing
+        const fileReader = new FileReader();
+        
+        fileReader.onload = async (e) => {
+          const base64 = e.target?.result as string;
+          
+          // Call analyze edge function
+          const { data: analysisData, error: analysisError } = await supabase.functions.invoke(
+            'analyze-credit-report',
+            {
+              body: {
+                reportText: base64,
+                fileName: file.name,
+              },
+            }
+          );
+
+          if (analysisError) {
+            console.error('Analysis error:', analysisError);
+            
+            // Update status to analyzed but with error
+            await supabase
+              .from('credit_reports')
+              .update({ status: 'error' })
+              .eq('id', reportData.id);
+
+            if (analysisError.message?.includes('429')) {
+              toast({
+                title: "Rate Limit Exceeded",
+                description: "Please wait a moment and try uploading again.",
+                variant: "destructive",
+              });
+            } else if (analysisError.message?.includes('402')) {
+              toast({
+                title: "AI Credits Depleted",
+                description: "Please add credits to continue analysis.",
+                variant: "destructive",
+              });
+            } else {
+              toast({
+                title: "Analysis Failed",
+                description: "Could not analyze credit report. You can still view the file.",
+                variant: "destructive",
+              });
+            }
+            return;
+          }
+
+          // Insert flagged items
+          if (analysisData?.flaggedItems && analysisData.flaggedItems.length > 0) {
+            const flaggedItems = analysisData.flaggedItems.map((item: any) => ({
+              user_id: user.id,
+              report_id: reportData.id,
+              account_name: item.accountName,
+              account_type: item.accountType || 'Unknown',
+              issue_type: item.issueType,
+              description: item.description,
+              confidence_score: item.confidenceScore,
+              balance: item.balance,
+              date_opened: item.dateOpened,
+            }));
+
+            const { error: flaggedError } = await supabase
+              .from('flagged_items')
+              .insert(flaggedItems);
+
+            if (flaggedError) {
+              console.error('Error inserting flagged items:', flaggedError);
+            }
+          }
+
+          // Update report status
+          await supabase
+            .from('credit_reports')
+            .update({ status: 'analyzed' })
+            .eq('id', reportData.id);
+
+          toast({
+            title: "Analysis Complete!",
+            description: `Found ${analysisData?.count || 0} potential issues to review`,
+          });
+        };
+
+        fileReader.readAsDataURL(file);
+
+      } catch (parseError: any) {
+        console.error('Parse error:', parseError);
+        
+        await supabase
+          .from('credit_reports')
+          .update({ status: 'uploaded' })
+          .eq('id', reportData.id);
+
+        toast({
+          title: "Upload Successful",
+          description: "File uploaded but automatic analysis is unavailable",
+        });
+      }
+
     } catch (error: any) {
+      console.error('Upload error:', error);
       toast({
         title: "Upload Failed",
-        description: error.message,
+        description: error.message || "Failed to upload credit report",
         variant: "destructive",
       });
+    } finally {
+      setUploadingFile(false);
+      event.target.value = '';
     }
   };
 
@@ -174,16 +309,26 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <label htmlFor="file-upload" className="block">
-                  <div className="border-2 border-dashed border-border rounded-lg p-12 text-center hover:border-primary/50 transition-colors cursor-pointer">
-                    <Upload className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Drag & Drop Your Credit Report</h3>
+                  <div className={`border-2 border-dashed border-border rounded-lg p-12 text-center hover:border-primary/50 transition-colors ${uploadingFile ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
+                    {uploadingFile ? (
+                      <Loader2 className="w-16 h-16 text-primary mx-auto mb-4 animate-spin" />
+                    ) : (
+                      <Upload className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                    )}
+                    <h3 className="text-lg font-semibold mb-2">
+                      {uploadingFile ? 'Uploading & Analyzing...' : 'Drag & Drop Your Credit Report'}
+                    </h3>
                     <p className="text-sm text-muted-foreground mb-4">
-                      Supports PDF files from Experian, TransUnion, or Equifax
+                      {uploadingFile 
+                        ? 'Please wait while we process your report' 
+                        : 'Supports PDF files from Experian, TransUnion, or Equifax (Max 20MB)'}
                     </p>
-                    <Button type="button">
-                      <Upload className="w-4 h-4 mr-2" />
-                      Choose File
-                    </Button>
+                    {!uploadingFile && (
+                      <Button type="button">
+                        <Upload className="w-4 h-4 mr-2" />
+                        Choose File
+                      </Button>
+                    )}
                   </div>
                   <input
                     id="file-upload"
@@ -191,6 +336,7 @@ const Dashboard = () => {
                     className="hidden"
                     accept=".pdf"
                     onChange={handleFileUpload}
+                    disabled={uploadingFile}
                   />
                 </label>
                 

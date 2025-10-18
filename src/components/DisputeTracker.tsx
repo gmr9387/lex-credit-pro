@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { FileText, Calendar, CheckCircle, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { DisputeSkeleton } from '@/components/ui/skeletons';
 
 interface Dispute {
   id: string;
@@ -60,7 +60,7 @@ export const DisputeTracker = () => {
   };
 
   if (loading) {
-    return <div className="text-muted-foreground">Loading disputes...</div>;
+    return <DisputeSkeleton />;
   }
 
   if (disputes.length === 0) {

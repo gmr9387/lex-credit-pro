@@ -3,9 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, Send, User } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Bot, Send, User, AlertCircle, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { ChatSkeleton } from '@/components/ui/skeletons';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -21,6 +23,7 @@ export const CreditMentor = () => {
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -37,13 +40,23 @@ export const CreditMentor = () => {
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setLoading(true);
+    setApiError(null);
 
     try {
       const { data, error } = await supabase.functions.invoke('credit-mentor-chat', {
         body: { messages: [...messages, userMessage] },
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message?.includes('429')) {
+          setApiError('Rate limit exceeded. Please wait a moment and try again.');
+          return;
+        } else if (error.message?.includes('402')) {
+          setApiError('AI credits depleted. Please add credits to continue.');
+          return;
+        }
+        throw error;
+      }
 
       const assistantMessage: Message = {
         role: 'assistant',
@@ -52,11 +65,8 @@ export const CreditMentor = () => {
 
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to get response from Credit Mentor',
-        variant: 'destructive',
-      });
+      console.error('Credit Mentor error:', error);
+      setApiError(error.message || 'Failed to get response from Credit Mentor');
     } finally {
       setLoading(false);
     }
@@ -78,6 +88,13 @@ export const CreditMentor = () => {
         </div>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col p-0">
+        {apiError && (
+          <Alert variant="destructive" className="m-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{apiError}</AlertDescription>
+          </Alert>
+        )}
+
         <ScrollArea className="flex-1 px-4" ref={scrollRef}>
           <div className="space-y-4 py-4">
             {messages.map((message, index) => (
@@ -109,10 +126,13 @@ export const CreditMentor = () => {
             {loading && (
               <div className="flex gap-3 justify-start">
                 <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <Bot className="h-4 w-4 text-primary animate-pulse" />
+                  <Loader2 className="h-4 w-4 text-primary animate-spin" />
                 </div>
                 <div className="bg-muted rounded-lg px-4 py-2">
-                  <p className="text-sm">Thinking...</p>
+                  <p className="text-sm flex items-center gap-2">
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    Thinking...
+                  </p>
                 </div>
               </div>
             )}
