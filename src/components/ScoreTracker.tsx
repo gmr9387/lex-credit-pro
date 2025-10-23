@@ -6,9 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { ScoreAnalytics } from './ScoreAnalytics';
 
 interface ScoreSnapshot {
   id: string;
@@ -87,17 +88,12 @@ export const ScoreTracker = () => {
     }
   };
 
-  const chartData = snapshots.map((s) => ({
-    date: new Date(s.snapshot_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-    score: s.score,
-  }));
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold">Score History</h3>
-          <p className="text-sm text-muted-foreground">Track your credit score progress over time</p>
+          <h3 className="text-lg font-semibold">Credit Score Tracking</h3>
+          <p className="text-sm text-muted-foreground">Monitor and analyze your credit score progress</p>
         </div>
         <Button onClick={() => setShowForm(!showForm)} size="sm">
           <Plus className="h-4 w-4 mr-2" />
@@ -165,28 +161,46 @@ export const ScoreTracker = () => {
       )}
 
       {snapshots.length > 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Score Trend</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                <XAxis dataKey="date" className="text-xs" />
-                <YAxis domain={[300, 850]} className="text-xs" />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="score"
-                  stroke="hsl(var(--primary))"
-                  strokeWidth={2}
-                  dot={{ fill: 'hsl(var(--primary))' }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        <Tabs defaultValue="analytics" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="analytics">Analytics & Projections</TabsTrigger>
+            <TabsTrigger value="history">Score History</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="analytics">
+            <ScoreAnalytics snapshots={snapshots} />
+          </TabsContent>
+
+          <TabsContent value="history">
+            <Card>
+              <CardHeader>
+                <CardTitle>All Recorded Scores</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {snapshots.map((snapshot) => (
+                    <div key={snapshot.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center gap-4">
+                        <div className="text-2xl font-bold">{snapshot.score}</div>
+                        <div>
+                          <p className="font-medium">{snapshot.bureau}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(snapshot.snapshot_date).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                      {snapshot.notes && (
+                        <p className="text-sm text-muted-foreground max-w-xs truncate">
+                          {snapshot.notes}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       ) : (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">

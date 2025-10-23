@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Calendar, CheckCircle, Clock } from 'lucide-react';
+import { FileText, Calendar, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { DisputeSkeleton } from '@/components/ui/skeletons';
+import { DisputeActions } from './DisputeActions';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 interface Dispute {
   id: string;
@@ -13,7 +15,9 @@ interface Dispute {
   round_number: number;
   sent_date: string | null;
   response_deadline: string | null;
+  response_date: string | null;
   outcome: string | null;
+  letter_content: string;
   created_at: string;
 }
 
@@ -59,6 +63,17 @@ export const DisputeTracker = () => {
     }
   };
 
+  const isDeadlineApproaching = (deadline: string | null) => {
+    if (!deadline) return false;
+    const daysUntil = Math.ceil((new Date(deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+    return daysUntil <= 7 && daysUntil >= 0;
+  };
+
+  const isOverdue = (deadline: string | null) => {
+    if (!deadline) return false;
+    return new Date(deadline) < new Date();
+  };
+
   if (loading) {
     return <DisputeSkeleton />;
   }
@@ -87,12 +102,26 @@ export const DisputeTracker = () => {
                   Created {new Date(dispute.created_at).toLocaleDateString()}
                 </div>
               </div>
-              <Badge variant={getStatusColor(dispute.status || 'draft')}>
-                {dispute.status || 'draft'}
-              </Badge>
+              <div className="flex items-center gap-2">
+                {dispute.response_deadline && isDeadlineApproaching(dispute.response_deadline) && (
+                  <Badge variant="outline" className="text-chart-3">
+                    <AlertCircle className="h-3 w-3 mr-1" />
+                    Deadline Soon
+                  </Badge>
+                )}
+                {dispute.response_deadline && isOverdue(dispute.response_deadline) && dispute.status !== 'resolved' && (
+                  <Badge variant="destructive">
+                    <AlertCircle className="h-3 w-3 mr-1" />
+                    Overdue
+                  </Badge>
+                )}
+                <Badge variant={getStatusColor(dispute.status || 'draft')}>
+                  {dispute.status || 'draft'}
+                </Badge>
+              </div>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
               {dispute.sent_date && (
                 <div className="flex items-center gap-2">
@@ -105,20 +134,49 @@ export const DisputeTracker = () => {
               )}
               {dispute.response_deadline && (
                 <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-primary" />
+                  <Clock className={`h-4 w-4 ${isOverdue(dispute.response_deadline) ? 'text-destructive' : 'text-primary'}`} />
                   <div>
                     <p className="text-muted-foreground">Deadline</p>
                     <p className="font-medium">{new Date(dispute.response_deadline).toLocaleDateString()}</p>
                   </div>
                 </div>
               )}
-              {dispute.outcome && (
-                <div>
-                  <p className="text-muted-foreground">Outcome</p>
-                  <p className="font-medium">{dispute.outcome}</p>
+              {dispute.response_date && (
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-success" />
+                  <div>
+                    <p className="text-muted-foreground">Response Date</p>
+                    <p className="font-medium">{new Date(dispute.response_date).toLocaleDateString()}</p>
+                  </div>
                 </div>
               )}
             </div>
+
+            {dispute.outcome && (
+              <div className="p-3 bg-muted/50 rounded-lg">
+                <p className="text-sm font-medium mb-1">Outcome</p>
+                <p className="text-sm text-muted-foreground">{dispute.outcome}</p>
+              </div>
+            )}
+
+            <Collapsible>
+              <CollapsibleTrigger className="text-sm text-primary hover:underline">
+                View Letter Content
+              </CollapsibleTrigger>
+              <CollapsibleContent className="mt-2">
+                <div className="p-4 bg-muted/50 rounded-lg">
+                  <pre className="text-xs whitespace-pre-wrap font-mono">{dispute.letter_content}</pre>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+
+            <DisputeActions
+              disputeId={dispute.id}
+              bureau={dispute.bureau}
+              letterContent={dispute.letter_content}
+              status={dispute.status || 'draft'}
+              onUpdate={fetchDisputes}
+            />
           </CardContent>
         </Card>
       ))}

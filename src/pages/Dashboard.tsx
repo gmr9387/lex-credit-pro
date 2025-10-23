@@ -13,6 +13,7 @@ import { FlaggedItemsList } from "@/components/FlaggedItemsList";
 import { DisputeTracker } from "@/components/DisputeTracker";
 import { ScoreTracker } from "@/components/ScoreTracker";
 import { CreditMentor } from "@/components/CreditMentor";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -250,7 +251,8 @@ const Dashboard = () => {
             <Shield className="w-8 h-8 text-primary" />
             <span className="text-xl font-bold">Credit Repair AI</span>
           </div>
-          <nav className="flex items-center gap-4">
+          <nav className="flex items-center gap-2">
+            <ThemeToggle />
             <Button variant="ghost" asChild>
               <Link to="/">Home</Link>
             </Button>
