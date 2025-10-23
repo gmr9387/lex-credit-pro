@@ -14,6 +14,9 @@ import { DisputeTracker } from "@/components/DisputeTracker";
 import { ScoreTracker } from "@/components/ScoreTracker";
 import { CreditMentor } from "@/components/CreditMentor";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { CreditRecommendations } from "@/components/CreditRecommendations";
+import { EducationCenter } from "@/components/EducationCenter";
+import { OnboardingTour } from "@/components/OnboardingTour";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -271,7 +274,7 @@ const Dashboard = () => {
         </div>
 
         <Tabs defaultValue="upload" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
             <TabsTrigger value="upload" className="flex items-center gap-2">
               <Upload className="w-4 h-4" />
               <span className="hidden sm:inline">Upload</span>
@@ -295,6 +298,14 @@ const Dashboard = () => {
             <TabsTrigger value="mentor" className="flex items-center gap-2">
               <MessageSquare className="w-4 h-4" />
               <span className="hidden sm:inline">Mentor</span>
+            </TabsTrigger>
+            <TabsTrigger value="advisor" className="flex items-center gap-2">
+              <Brain className="w-4 h-4" />
+              <span className="hidden sm:inline">Advisor</span>
+            </TabsTrigger>
+            <TabsTrigger value="learn" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              <span className="hidden sm:inline">Learn</span>
             </TabsTrigger>
           </TabsList>
 
@@ -376,8 +387,18 @@ const Dashboard = () => {
           <TabsContent value="mentor">
             <CreditMentor />
           </TabsContent>
+
+          <TabsContent value="advisor">
+            <CreditRecommendations />
+          </TabsContent>
+
+          <TabsContent value="learn">
+            <EducationCenter />
+          </TabsContent>
         </Tabs>
       </div>
+
+      <OnboardingTour />
     </div>
   );
 };

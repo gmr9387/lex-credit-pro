@@ -3,6 +3,9 @@ project_id = "nxnyduoraxypbvmvbija"
 [functions.generate-dispute-letter]
 verify_jwt = true
 
+[functions.credit-recommendations]
+verify_jwt = true
+
 [functions.credit-mentor-chat]
 verify_jwt = true
 
