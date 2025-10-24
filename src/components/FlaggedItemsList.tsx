@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { AlertCircle, TrendingUp } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { FlaggedItemSkeleton } from '@/components/ui/skeletons';
+import { ExportButton } from './ExportButton';
+import { formatFlaggedItemsForExport } from '@/lib/exportUtils';
 
 interface FlaggedItem {
   id: string;
@@ -63,6 +65,19 @@ export const FlaggedItemsList = () => {
 
   return (
     <div className="space-y-4">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="text-lg font-semibold">Flagged Issues</h3>
+          <p className="text-sm text-muted-foreground">Issues detected in your credit report</p>
+        </div>
+        <ExportButton 
+          data={items}
+          filename="flagged_credit_issues"
+          formatter={formatFlaggedItemsForExport}
+          label="Export Issues"
+        />
+      </div>
+      
       {items.map((item) => (
         <Card key={item.id} className="border-l-4 border-l-destructive">
           <CardHeader>

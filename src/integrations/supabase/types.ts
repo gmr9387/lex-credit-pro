@@ -47,6 +47,7 @@ export type Database = {
           file_url: string | null
           id: string
           status: string | null
+          updated_at: string
           uploaded_at: string
           user_id: string
         }
@@ -58,6 +59,7 @@ export type Database = {
           file_url?: string | null
           id?: string
           status?: string | null
+          updated_at?: string
           uploaded_at?: string
           user_id: string
         }
@@ -69,6 +71,7 @@ export type Database = {
           file_url?: string | null
           id?: string
           status?: string | null
+          updated_at?: string
           uploaded_at?: string
           user_id?: string
         }
@@ -130,6 +133,36 @@ export type Database = {
           },
         ]
       }
+      email_preferences: {
+        Row: {
+          created_at: string | null
+          id: string
+          notify_analysis_complete: boolean | null
+          notify_dispute_deadline: boolean | null
+          notify_score_update: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          notify_analysis_complete?: boolean | null
+          notify_dispute_deadline?: boolean | null
+          notify_score_update?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          notify_analysis_complete?: boolean | null
+          notify_dispute_deadline?: boolean | null
+          notify_score_update?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       error_logs: {
         Row: {
           component_name: string | null
@@ -175,6 +208,7 @@ export type Database = {
           id: string
           issue_type: string
           report_id: string
+          updated_at: string
           user_id: string
         }
         Insert: {
@@ -188,6 +222,7 @@ export type Database = {
           id?: string
           issue_type: string
           report_id: string
+          updated_at?: string
           user_id: string
         }
         Update: {
@@ -201,6 +236,7 @@ export type Database = {
           id?: string
           issue_type?: string
           report_id?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: [

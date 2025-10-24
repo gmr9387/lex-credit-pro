@@ -11,6 +11,8 @@ import { TrendingUp, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ScoreAnalytics } from './ScoreAnalytics';
 import { analytics } from '@/lib/analytics';
+import { ExportButton } from './ExportButton';
+import { formatScoreSnapshotForExport } from '@/lib/exportUtils';
 
 interface ScoreSnapshot {
   id: string;
@@ -98,10 +100,18 @@ export const ScoreTracker = () => {
           <h3 className="text-lg font-semibold">Credit Score Tracking</h3>
           <p className="text-sm text-muted-foreground">Monitor and analyze your credit score progress</p>
         </div>
-        <Button onClick={() => setShowForm(!showForm)} size="sm">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Score
-        </Button>
+        <div className="flex gap-2">
+          <ExportButton 
+            data={snapshots}
+            filename="credit_score_history"
+            formatter={formatScoreSnapshotForExport}
+            label="Export History"
+          />
+          <Button onClick={() => setShowForm(!showForm)} size="sm">
+            <Plus className="h-4 w-4 mr-2" />
+            {showForm ? 'Cancel' : 'Add Score'}
+          </Button>
+        </div>
       </div>
 
       {showForm && (

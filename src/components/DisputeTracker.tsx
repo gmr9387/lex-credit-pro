@@ -7,6 +7,8 @@ import { useToast } from '@/hooks/use-toast';
 import { DisputeSkeleton } from '@/components/ui/skeletons';
 import { DisputeActions } from './DisputeActions';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ExportButton } from './ExportButton';
+import { formatDisputesForExport } from '@/lib/exportUtils';
 
 interface Dispute {
   id: string;
@@ -91,6 +93,19 @@ export const DisputeTracker = () => {
 
   return (
     <div className="space-y-4">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="text-lg font-semibold">Disputes</h3>
+          <p className="text-sm text-muted-foreground">Track all your credit dispute letters</p>
+        </div>
+        <ExportButton 
+          data={disputes}
+          filename="credit_disputes"
+          formatter={formatDisputesForExport}
+          label="Export Disputes"
+        />
+      </div>
+      
       {disputes.map((dispute) => (
         <Card key={dispute.id}>
           <CardHeader>

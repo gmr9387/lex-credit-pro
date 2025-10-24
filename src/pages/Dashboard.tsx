@@ -17,6 +17,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { CreditRecommendations } from "@/components/CreditRecommendations";
 import { EducationCenter } from "@/components/EducationCenter";
 import { OnboardingTour } from "@/components/OnboardingTour";
+import { EmailPreferences } from "@/components/EmailPreferences";
 import { analytics } from "@/lib/analytics";
 
 const Dashboard = () => {
