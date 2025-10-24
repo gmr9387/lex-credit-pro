@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Mail, Printer, Calendar as CalendarIcon, CheckCircle2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { analytics } from '@/lib/analytics';
 
 interface DisputeActionsProps {
   disputeId: string;
@@ -70,6 +71,8 @@ export const DisputeActions = ({ disputeId, bureau, letterContent, status, onUpd
 
       if (error) throw error;
 
+      analytics.disputeMarkedSent(disputeId);
+
       toast({
         title: 'Dispute marked as sent',
         description: `Response deadline: ${deadline.toLocaleDateString()}`,
@@ -104,6 +107,8 @@ export const DisputeActions = ({ disputeId, bureau, letterContent, status, onUpd
         .eq('id', disputeId);
 
       if (error) throw error;
+
+      analytics.disputeResolved(disputeId);
 
       toast({
         title: 'Dispute marked as resolved',

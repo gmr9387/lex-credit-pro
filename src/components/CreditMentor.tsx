@@ -8,6 +8,7 @@ import { Bot, Send, User, AlertCircle, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ChatSkeleton } from '@/components/ui/skeletons';
+import { analytics } from '@/lib/analytics';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -64,6 +65,7 @@ export const CreditMentor = () => {
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
+      analytics.mentorChatMessage(userMessage.content.length);
     } catch (error: any) {
       console.error('Credit Mentor error:', error);
       setApiError(error.message || 'Failed to get response from Credit Mentor');

@@ -1,0 +1,248 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { Shield, Activity, AlertCircle, Users, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const Admin = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [analytics, setAnalytics] = useState<any[]>([]);
+  const [errorLogs, setErrorLogs] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+
+  useEffect(() => {
+    checkAdminAccess();
+  }, []);
+
+  const checkAdminAccess = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        navigate("/auth");
+        return;
+      }
+
+      // Check if user has admin role
+      const { data: roles, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .single();
+
+      if (error || !roles) {
+        toast({
+          title: "Access Denied",
+          description: "You don't have permission to access the admin dashboard.",
+          variant: "destructive",
+        });
+        navigate("/dashboard");
+        return;
+      }
+
+      setIsAdmin(true);
+      await loadAdminData();
+    } catch (error) {
+      console.error("Error checking admin access:", error);
+      navigate("/dashboard");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadAdminData = async () => {
+    try {
+      // Load analytics events
+      const { data: analyticsData } = await supabase
+        .from("analytics_events")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(50);
+      setAnalytics(analyticsData || []);
+
+      // Load error logs
+      const { data: errorData } = await supabase
+        .from("error_logs")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(50);
+      setErrorLogs(errorData || []);
+
+      // Load profiles for user management
+      const { data: profilesData } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(50);
+      setUsers(profilesData || []);
+    } catch (error) {
+      console.error("Error loading admin data:", error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Skeleton className="h-12 w-12 rounded-full" />
+      </div>
+    );
+  }
+
+  if (!isAdmin) return null;
+
+  return (
+    <div className="min-h-screen bg-background">
+      <header className="border-b bg-card">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Shield className="h-8 w-8 text-primary" />
+              <div>
+                <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+                <p className="text-sm text-muted-foreground">System monitoring and management</p>
+              </div>
+            </div>
+            <Button variant="outline" onClick={() => navigate("/dashboard")}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Dashboard
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-8">
+        <Tabs defaultValue="analytics" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="analytics">
+              <Activity className="h-4 w-4 mr-2" />
+              Analytics
+            </TabsTrigger>
+            <TabsTrigger value="errors">
+              <AlertCircle className="h-4 w-4 mr-2" />
+              Error Logs
+            </TabsTrigger>
+            <TabsTrigger value="users">
+              <Users className="h-4 w-4 mr-2" />
+              Users
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="analytics">
+            <Card>
+              <CardHeader>
+                <CardTitle>Analytics Events</CardTitle>
+                <CardDescription>Recent user activity and events</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Event</TableHead>
+                      <TableHead>User ID</TableHead>
+                      <TableHead>Data</TableHead>
+                      <TableHead>Time</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {analytics.map((event) => (
+                      <TableRow key={event.id}>
+                        <TableCell className="font-medium">{event.event_name}</TableCell>
+                        <TableCell className="font-mono text-xs">{event.user_id?.slice(0, 8)}...</TableCell>
+                        <TableCell className="text-xs">
+                          {event.event_data ? JSON.stringify(event.event_data).slice(0, 50) : "-"}
+                        </TableCell>
+                        <TableCell className="text-sm">
+                          {new Date(event.created_at).toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="errors">
+            <Card>
+              <CardHeader>
+                <CardTitle>Error Logs</CardTitle>
+                <CardDescription>Application errors and exceptions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Error</TableHead>
+                      <TableHead>Component</TableHead>
+                      <TableHead>User</TableHead>
+                      <TableHead>Time</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {errorLogs.map((log) => (
+                      <TableRow key={log.id}>
+                        <TableCell className="max-w-md truncate">{log.error_message}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{log.component_name || "Unknown"}</Badge>
+                        </TableCell>
+                        <TableCell className="font-mono text-xs">
+                          {log.user_id?.slice(0, 8) || "Anonymous"}...
+                        </TableCell>
+                        <TableCell className="text-sm">
+                          {new Date(log.created_at).toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="users">
+            <Card>
+              <CardHeader>
+                <CardTitle>User Management</CardTitle>
+                <CardDescription>Registered users and their profiles</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>User ID</TableHead>
+                      <TableHead>Joined</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {users.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell className="font-medium">{user.full_name}</TableCell>
+                        <TableCell className="font-mono text-xs">{user.user_id?.slice(0, 8)}...</TableCell>
+                        <TableCell className="text-sm">
+                          {new Date(user.created_at).toLocaleString()}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </main>
+    </div>
+  );
+};
+
+export default Admin;

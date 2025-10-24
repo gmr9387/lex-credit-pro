@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FileText, Loader2, AlertCircle } from "lucide-react";
 import { disputeFormSchema, type DisputeFormData } from "@/lib/validations";
+import { analytics } from "@/lib/analytics";
 
 interface DisputeGeneratorProps {
   userId: string;
@@ -105,6 +106,8 @@ export const DisputeGenerator = ({ userId, onSuccess }: DisputeGeneratorProps) =
         });
 
       if (error) throw error;
+
+      analytics.disputeGenerated('draft', formValues.issueType);
 
       toast({
         title: "Saved!",

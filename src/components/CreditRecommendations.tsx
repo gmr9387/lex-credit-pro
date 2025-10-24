@@ -5,6 +5,7 @@ import { Brain, Loader2, Lightbulb, TrendingUp, Shield, AlertCircle } from 'luci
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { analytics } from '@/lib/analytics';
 
 export const CreditRecommendations = () => {
   const [recommendations, setRecommendations] = useState<string>('');
@@ -38,6 +39,8 @@ export const CreditRecommendations = () => {
 
       setRecommendations(data.recommendations);
       setCreditProfile(data.creditProfile);
+      
+      analytics.recommendationsViewed();
       
       toast({
         title: 'Recommendations Generated',

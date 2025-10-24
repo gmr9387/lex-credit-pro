@@ -17,6 +17,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { CreditRecommendations } from "@/components/CreditRecommendations";
 import { EducationCenter } from "@/components/EducationCenter";
 import { OnboardingTour } from "@/components/OnboardingTour";
+import { analytics } from "@/lib/analytics";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -199,6 +200,9 @@ const Dashboard = () => {
             .from('credit_reports')
             .update({ status: 'analyzed' })
             .eq('id', reportData.id);
+
+          // Track analytics
+          analytics.reportUploaded(file.name, file.size);
 
           toast({
             title: "Analysis Complete!",

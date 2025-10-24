@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TrendingUp, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { ScoreAnalytics } from './ScoreAnalytics';
+import { analytics } from '@/lib/analytics';
 
 interface ScoreSnapshot {
   id: string;
@@ -66,6 +67,8 @@ export const ScoreTracker = () => {
       });
 
       if (error) throw error;
+
+      analytics.scoreUpdated(parseInt(score), bureau);
 
       toast({
         title: 'Score saved',
