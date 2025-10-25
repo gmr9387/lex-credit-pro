@@ -4,7 +4,7 @@ import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut, MessageSquare, Loader2 } from "lucide-react";
+import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut, MessageSquare, Loader2, Settings as SettingsIcon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { DisputeGenerator } from "@/components/DisputeGenerator";
@@ -254,63 +254,69 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border/50 bg-card/50 backdrop-blur sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Shield className="w-8 h-8 text-primary" />
-            <span className="text-xl font-bold">Credit Repair AI</span>
+            <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+            <span className="text-base sm:text-xl font-bold">Credit Repair AI</span>
           </div>
-          <nav className="flex items-center gap-2">
+          <nav className="flex items-center gap-1 sm:gap-2">
             <ThemeToggle />
-            <Button variant="ghost" asChild>
+            <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
               <Link to="/">Home</Link>
             </Button>
-            <Button variant="outline" onClick={handleSignOut}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/settings">
+                <SettingsIcon className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Settings</span>
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleSignOut}>
+              <LogOut className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Sign Out</span>
             </Button>
           </nav>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Welcome Back</h1>
-          <p className="text-muted-foreground">Your credit optimization command center</p>
+      <div className="container mx-auto px-4 py-4 sm:py-8">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-4xl font-bold mb-2">Welcome Back</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Your credit optimization command center</p>
         </div>
 
         <Tabs defaultValue="upload" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
-            <TabsTrigger value="upload" className="flex items-center gap-2">
-              <Upload className="w-4 h-4" />
-              <span className="hidden sm:inline">Upload</span>
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-1">
+            <TabsTrigger value="upload" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Upload className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Upload</span>
             </TabsTrigger>
-            <TabsTrigger value="reports" className="flex items-center gap-2">
-              <FileText className="w-4 h-4" />
-              <span className="hidden sm:inline">Reports</span>
+            <TabsTrigger value="reports" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Reports</span>
             </TabsTrigger>
-            <TabsTrigger value="issues" className="flex items-center gap-2">
-              <AlertCircle className="w-4 h-4" />
-              <span className="hidden sm:inline">Issues</span>
+            <TabsTrigger value="issues" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Issues</span>
             </TabsTrigger>
-            <TabsTrigger value="disputes" className="flex items-center gap-2">
-              <Shield className="w-4 h-4" />
-              <span className="hidden sm:inline">Disputes</span>
+            <TabsTrigger value="disputes" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Shield className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Disputes</span>
             </TabsTrigger>
-            <TabsTrigger value="scores" className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4" />
-              <span className="hidden sm:inline">Scores</span>
+            <TabsTrigger value="scores" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Scores</span>
             </TabsTrigger>
-            <TabsTrigger value="mentor" className="flex items-center gap-2">
-              <MessageSquare className="w-4 h-4" />
-              <span className="hidden sm:inline">Mentor</span>
+            <TabsTrigger value="mentor" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Mentor</span>
             </TabsTrigger>
-            <TabsTrigger value="advisor" className="flex items-center gap-2">
-              <Brain className="w-4 h-4" />
-              <span className="hidden sm:inline">Advisor</span>
+            <TabsTrigger value="advisor" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Brain className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Advisor</span>
             </TabsTrigger>
-            <TabsTrigger value="learn" className="flex items-center gap-2">
-              <FileText className="w-4 h-4" />
-              <span className="hidden sm:inline">Learn</span>
+            <TabsTrigger value="learn" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Learn</span>
             </TabsTrigger>
           </TabsList>
 

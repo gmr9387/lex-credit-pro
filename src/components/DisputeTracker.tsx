@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FileText, Calendar, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { FileText, Calendar, CheckCircle, Clock, AlertCircle, Paperclip } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { DisputeSkeleton } from '@/components/ui/skeletons';
 import { DisputeActions } from './DisputeActions';
@@ -21,6 +21,7 @@ interface Dispute {
   outcome: string | null;
   letter_content: string;
   created_at: string;
+  evidence_urls: string[] | null;
 }
 
 export const DisputeTracker = () => {
@@ -171,6 +172,22 @@ export const DisputeTracker = () => {
               <div className="p-3 bg-muted/50 rounded-lg">
                 <p className="text-sm font-medium mb-1">Outcome</p>
                 <p className="text-sm text-muted-foreground">{dispute.outcome}</p>
+              </div>
+            )}
+
+            {dispute.evidence_urls && dispute.evidence_urls.length > 0 && (
+              <div className="p-3 bg-muted/50 rounded-lg">
+                <p className="text-sm font-medium mb-2 flex items-center gap-2">
+                  <Paperclip className="w-4 h-4" />
+                  Supporting Evidence ({dispute.evidence_urls.length})
+                </p>
+                <div className="space-y-1">
+                  {dispute.evidence_urls.map((url, index) => (
+                    <p key={index} className="text-xs text-muted-foreground truncate">
+                      {url.split('/').pop()}
+                    </p>
+                  ))}
+                </div>
               </div>
             )}
 

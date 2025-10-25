@@ -81,6 +81,7 @@ export type Database = {
         Row: {
           bureau: string
           created_at: string
+          evidence_urls: string[] | null
           id: string
           item_id: string | null
           letter_content: string
@@ -96,6 +97,7 @@ export type Database = {
         Insert: {
           bureau: string
           created_at?: string
+          evidence_urls?: string[] | null
           id?: string
           item_id?: string | null
           letter_content: string
@@ -111,6 +113,7 @@ export type Database = {
         Update: {
           bureau?: string
           created_at?: string
+          evidence_urls?: string[] | null
           id?: string
           item_id?: string | null
           letter_content?: string
