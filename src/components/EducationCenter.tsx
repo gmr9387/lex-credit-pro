@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { BookOpen, Scale, Shield, TrendingUp, AlertCircle, FileText } from 'lucide-react';
+import { BookOpen, Scale, Shield, TrendingUp, AlertCircle, FileText, Lightbulb, Target, CreditCard, Users, DollarSign, Sparkles } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export const EducationCenter = () => {
@@ -14,10 +14,11 @@ export const EducationCenter = () => {
       </div>
 
       <Tabs defaultValue="faq" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="faq">FAQ</TabsTrigger>
           <TabsTrigger value="rights">Your Rights</TabsTrigger>
           <TabsTrigger value="tips">Credit Tips</TabsTrigger>
+          <TabsTrigger value="strategies">Strategies</TabsTrigger>
         </TabsList>
 
         <TabsContent value="faq">
@@ -202,6 +203,251 @@ export const EducationCenter = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="strategies">
+          <div className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lightbulb className="h-5 w-5 text-primary" />
+                  Creative Credit Building Strategies
+                </CardTitle>
+                <CardDescription>
+                  Advanced techniques to boost your credit score strategically
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="strategy-1">
+                    <AccordionTrigger className="text-left">
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4 text-primary" />
+                        <span>Authorized User Strategy</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-2">
+                      <p className="text-sm">
+                        Become an authorized user on someone else's account with good payment history and low utilization.
+                      </p>
+                      <div className="pl-4 border-l-2 border-primary/20 space-y-1">
+                        <p className="text-sm font-medium">How it works:</p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
+                          <li>Their positive history appears on your report</li>
+                          <li>Best with accounts 5+ years old and under 10% utilization</li>
+                          <li>Can add 50-100+ points if done strategically</li>
+                          <li>Choose accounts that report to all three bureaus</li>
+                        </ul>
+                      </div>
+                      <p className="text-sm text-amber-600 dark:text-amber-400 mt-2">
+                        ⚠️ Pro Tip: Focus on accounts with high credit limits and perfect payment history for maximum impact.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="strategy-2">
+                    <AccordionTrigger className="text-left">
+                      <div className="flex items-center gap-2">
+                        <CreditCard className="h-4 w-4 text-primary" />
+                        <span>Credit Utilization Optimization</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-2">
+                      <p className="text-sm">
+                        Strategic management of when and how you pay balances to maximize your score.
+                      </p>
+                      <div className="pl-4 border-l-2 border-primary/20 space-y-1">
+                        <p className="text-sm font-medium">Techniques:</p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
+                          <li><strong>Multiple Payment Method:</strong> Pay down balances before statement closing date</li>
+                          <li><strong>Credit Line Increase:</strong> Request increases every 6-12 months without new spending</li>
+                          <li><strong>Balance Distribution:</strong> Keep all cards under 30%, ideally under 10%</li>
+                          <li><strong>Zero Balance Strategy:</strong> Maintain one card with small balance, others at zero</li>
+                        </ul>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="strategy-3">
+                    <AccordionTrigger className="text-left">
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="h-4 w-4 text-primary" />
+                        <span>Debt Payoff Strategies</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-2">
+                      <p className="text-sm">
+                        Choose the right debt elimination method for your situation.
+                      </p>
+                      <div className="space-y-3">
+                        <div className="p-3 bg-muted rounded-lg">
+                          <p className="text-sm font-medium mb-1">Avalanche Method (Best for Savings)</p>
+                          <p className="text-sm text-muted-foreground">
+                            Pay minimums on all debts, focus extra on highest interest rate first. Saves most money long-term.
+                          </p>
+                        </div>
+                        <div className="p-3 bg-muted rounded-lg">
+                          <p className="text-sm font-medium mb-1">Snowball Method (Best for Motivation)</p>
+                          <p className="text-sm text-muted-foreground">
+                            Pay minimums on all debts, focus extra on smallest balance first. Creates quick wins and momentum.
+                          </p>
+                        </div>
+                        <div className="p-3 bg-muted rounded-lg">
+                          <p className="text-sm font-medium mb-1">Hybrid Approach</p>
+                          <p className="text-sm text-muted-foreground">
+                            Target high-interest debts while knocking out one small balance for motivation, then switch to avalanche.
+                          </p>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="strategy-4">
+                    <AccordionTrigger className="text-left">
+                      <div className="flex items-center gap-2">
+                        <Target className="h-4 w-4 text-primary" />
+                        <span>Goodwill Letter Strategy</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-2">
+                      <p className="text-sm">
+                        Request creditors remove accurate but negative information based on goodwill.
+                      </p>
+                      <div className="pl-4 border-l-2 border-primary/20 space-y-1">
+                        <p className="text-sm font-medium">When to use:</p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
+                          <li>One-time late payment due to unusual circumstances</li>
+                          <li>Long history of on-time payments otherwise</li>
+                          <li>Account is now current and in good standing</li>
+                        </ul>
+                        <p className="text-sm font-medium mt-2">Key elements:</p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
+                          <li>Explain the circumstance (job loss, medical emergency)</li>
+                          <li>Take responsibility - don't make excuses</li>
+                          <li>Highlight your loyalty as a customer</li>
+                          <li>Be polite and concise</li>
+                        </ul>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="strategy-5">
+                    <AccordionTrigger className="text-left">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="h-4 w-4 text-primary" />
+                        <span>Pay-for-Delete Negotiation</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-2">
+                      <p className="text-sm">
+                        Negotiate with collection agencies to remove items in exchange for payment.
+                      </p>
+                      <div className="pl-4 border-l-2 border-primary/20 space-y-1">
+                        <p className="text-sm font-medium">Strategy steps:</p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
+                          <li>Contact collection agency in writing before paying</li>
+                          <li>Offer settlement (40-60% of balance) for deletion</li>
+                          <li>Get written agreement BEFORE making payment</li>
+                          <li>Never admit the debt is yours in writing</li>
+                          <li>Keep all documentation for proof</li>
+                        </ul>
+                      </div>
+                      <p className="text-sm text-amber-600 dark:text-amber-400 mt-2">
+                        ⚠️ Important: Only pay after receiving written confirmation they'll delete the entry from all three bureaus.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="strategy-6">
+                    <AccordionTrigger className="text-left">
+                      <div className="flex items-center gap-2">
+                        <Shield className="h-4 w-4 text-primary" />
+                        <span>Credit Mix Diversification</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-2">
+                      <p className="text-sm">
+                        Build a healthy mix of credit types to demonstrate responsible credit management (10% of score).
+                      </p>
+                      <div className="space-y-2">
+                        <div className="p-3 bg-muted rounded-lg">
+                          <p className="text-sm font-medium mb-1">Revolving Credit</p>
+                          <p className="text-sm text-muted-foreground">
+                            Credit cards, lines of credit - pay off monthly for best impact
+                          </p>
+                        </div>
+                        <div className="p-3 bg-muted rounded-lg">
+                          <p className="text-sm font-medium mb-1">Installment Loans</p>
+                          <p className="text-sm text-muted-foreground">
+                            Auto loans, personal loans, mortgages - fixed payment schedule
+                          </p>
+                        </div>
+                        <div className="p-3 bg-muted rounded-lg">
+                          <p className="text-sm font-medium mb-1">Credit Builder Loans</p>
+                          <p className="text-sm text-muted-foreground">
+                            Small loans designed specifically to build credit - money held in savings until paid off
+                          </p>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="strategy-7">
+                    <AccordionTrigger className="text-left">
+                      <div className="flex items-center gap-2">
+                        <TrendingUp className="h-4 w-4 text-primary" />
+                        <span>Rapid Rescore for Major Purchases</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-2">
+                      <p className="text-sm">
+                        Get quick score updates when applying for a mortgage or major loan.
+                      </p>
+                      <div className="pl-4 border-l-2 border-primary/20 space-y-1">
+                        <p className="text-sm font-medium">How it works:</p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
+                          <li>Available through mortgage lenders (not direct to consumers)</li>
+                          <li>Pay down credit cards to near-zero before rescore</li>
+                          <li>Provide proof of payment to lender</li>
+                          <li>Score updates within 3-5 days instead of 30-45 days</li>
+                          <li>Can result in better interest rates saving thousands</li>
+                        </ul>
+                      </div>
+                      <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-2">
+                        💡 Best Use: When you're within a few points of a better rate tier on a mortgage
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="strategy-8">
+                    <AccordionTrigger className="text-left">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-primary" />
+                        <span>Statute of Limitations Strategy</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-2">
+                      <p className="text-sm">
+                        Understand how time affects old debts and collections.
+                      </p>
+                      <div className="pl-4 border-l-2 border-primary/20 space-y-1">
+                        <p className="text-sm font-medium">Key timelines:</p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
+                          <li><strong>Credit reporting:</strong> Most negative items fall off after 7 years</li>
+                          <li><strong>Bankruptcy:</strong> Chapter 7 stays for 10 years, Chapter 13 for 7 years</li>
+                          <li><strong>Legal debt:</strong> 3-6 years in most states (varies by state)</li>
+                          <li>Making a payment can restart the statute of limitations clock</li>
+                        </ul>
+                      </div>
+                      <p className="text-sm text-amber-600 dark:text-amber-400 mt-2">
+                        ⚠️ Warning: Never acknowledge or pay very old debt without legal advice - it may restart the clock
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
