@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { BookOpen, Scale, Shield, TrendingUp, AlertCircle, FileText, Lightbulb, Target, CreditCard, Users, DollarSign, Sparkles } from 'lucide-react';
+import { BookOpen, Scale, Shield, TrendingUp, AlertCircle, FileText, Lightbulb, Target, CreditCard, Users, DollarSign, Sparkles, Home, Zap, Mail, Lock, Building, PiggyBank } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export const EducationCenter = () => {
@@ -441,6 +441,169 @@ export const EducationCenter = () => {
                       </div>
                       <p className="text-sm text-amber-600 dark:text-amber-400 mt-2">
                         ⚠️ Warning: Never acknowledge or pay very old debt without legal advice - it may restart the clock
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="strategy-9">
+                    <AccordionTrigger className="text-left">
+                      <div className="flex items-center gap-2">
+                        <Home className="h-4 w-4 text-primary" />
+                        <span>Rent & Utility Reporting</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-2">
+                      <p className="text-sm">
+                        Add alternative payment history to your credit report to boost your score.
+                      </p>
+                      <div className="pl-4 border-l-2 border-primary/20 space-y-1">
+                        <p className="text-sm font-medium">Services to consider:</p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
+                          <li><strong>Rent Reporters:</strong> Rental Kharma, RentTrack, LevelCredit report rent payments</li>
+                          <li><strong>Utility Reporting:</strong> Experian Boost adds phone, utilities, streaming to credit file</li>
+                          <li><strong>Banking History:</strong> UltraFICO includes bank account management</li>
+                          <li>Can add 10-50+ points instantly with existing payment history</li>
+                        </ul>
+                      </div>
+                      <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-2">
+                        💡 Great for: Thin credit files or those rebuilding credit
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="strategy-10">
+                    <AccordionTrigger className="text-left">
+                      <div className="flex items-center gap-2">
+                        <PiggyBank className="h-4 w-4 text-primary" />
+                        <span>Secured Credit Card Graduation</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-2">
+                      <p className="text-sm">
+                        Use secured cards strategically to build credit, then graduate to unsecured cards.
+                      </p>
+                      <div className="pl-4 border-l-2 border-primary/20 space-y-1">
+                        <p className="text-sm font-medium">Step-by-step approach:</p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
+                          <li>Choose secured cards that report to all three bureaus</li>
+                          <li>Look for cards with graduation paths (deposit refunded after 6-12 months)</li>
+                          <li>Keep utilization under 10% and pay on time every month</li>
+                          <li>After 6-12 months, request unsecured conversion or apply for rewards cards</li>
+                          <li>Multiple secured cards can accelerate building positive history</li>
+                        </ul>
+                      </div>
+                      <p className="text-sm text-amber-600 dark:text-amber-400 mt-2">
+                        ⚠️ Tip: Avoid secured cards with annual fees unless they offer clear graduation benefits
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="strategy-11">
+                    <AccordionTrigger className="text-left">
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-primary" />
+                        <span>Debt Validation Letters</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-2">
+                      <p className="text-sm">
+                        Challenge collection accounts by requiring proof of debt ownership and validity.
+                      </p>
+                      <div className="pl-4 border-l-2 border-primary/20 space-y-1">
+                        <p className="text-sm font-medium">Strategy steps:</p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
+                          <li>Send validation letter within 30 days of first contact from collector</li>
+                          <li>Request original creditor info, account statements, proof of ownership</li>
+                          <li>Collection agency must stop collection until they validate</li>
+                          <li>Many cannot validate and must remove the item</li>
+                          <li>Always send certified mail with return receipt</li>
+                        </ul>
+                      </div>
+                      <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-2">
+                        💡 Success Rate: 30-50% of collections cannot be fully validated
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="strategy-12">
+                    <AccordionTrigger className="text-left">
+                      <div className="flex items-center gap-2">
+                        <Zap className="h-4 w-4 text-primary" />
+                        <span>Medical Debt Negotiation</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-2">
+                      <p className="text-sm">
+                        Special strategies for medical collections due to unique protections and reporting rules.
+                      </p>
+                      <div className="pl-4 border-l-2 border-primary/20 space-y-1">
+                        <p className="text-sm font-medium">Key advantages:</p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
+                          <li><strong>New Rules (2023):</strong> Medical debt under $500 not reported</li>
+                          <li><strong>Grace Period:</strong> 1-year before medical collections appear on report</li>
+                          <li><strong>Paid Deletion:</strong> Paid medical collections removed immediately</li>
+                          <li>Negotiate with hospital billing dept before it goes to collections</li>
+                          <li>Request itemized bills to identify and dispute errors</li>
+                          <li>Apply for hospital financial assistance or charity care</li>
+                        </ul>
+                      </div>
+                      <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-2">
+                        💡 Many hospitals will settle for 30-50% if you can pay immediately
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="strategy-13">
+                    <AccordionTrigger className="text-left">
+                      <div className="flex items-center gap-2">
+                        <Lock className="h-4 w-4 text-primary" />
+                        <span>Credit Freeze Strategy</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-2">
+                      <p className="text-sm">
+                        Protect your credit and control when it can be accessed while managing inquiries.
+                      </p>
+                      <div className="pl-4 border-l-2 border-primary/20 space-y-1">
+                        <p className="text-sm font-medium">Benefits:</p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
+                          <li><strong>Identity Protection:</strong> Prevents unauthorized credit applications</li>
+                          <li><strong>Free Service:</strong> All three bureaus must offer free freezes/unfreezes</li>
+                          <li><strong>Inquiry Control:</strong> Prevents soft inquiries from promotional offers</li>
+                          <li>Unfreeze temporarily when applying for credit (takes minutes)</li>
+                          <li>Does not affect your credit score or existing accounts</li>
+                        </ul>
+                      </div>
+                      <p className="text-sm text-amber-600 dark:text-amber-400 mt-2">
+                        ⚠️ Must freeze/unfreeze at all three bureaus separately
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="strategy-14">
+                    <AccordionTrigger className="text-left">
+                      <div className="flex items-center gap-2">
+                        <Building className="h-4 w-4 text-primary" />
+                        <span>Business Credit Building</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-2">
+                      <p className="text-sm">
+                        Build separate business credit to protect personal credit and access more capital.
+                      </p>
+                      <div className="pl-4 border-l-2 border-primary/20 space-y-1">
+                        <p className="text-sm font-medium">Steps to establish:</p>
+                        <ul className="text-sm text-muted-foreground space-y-1 list-disc pl-5">
+                          <li>Register business entity (LLC or Corporation)</li>
+                          <li>Get EIN (Employer Identification Number) from IRS</li>
+                          <li>Open business bank account and get business phone number</li>
+                          <li>Establish trade lines with vendors that report to business bureaus</li>
+                          <li>Get business credit cards that don't require personal guarantee</li>
+                          <li>Build Dun & Bradstreet, Experian Business, Equifax Business profiles</li>
+                        </ul>
+                      </div>
+                      <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-2">
+                        💡 Separates business debt from personal credit reports (when done correctly)
                       </p>
                     </AccordionContent>
                   </AccordionItem>
