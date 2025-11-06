@@ -4,7 +4,7 @@ import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut, MessageSquare, Loader2, Settings as SettingsIcon } from "lucide-react";
+import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut, MessageSquare, Loader2, Settings as SettingsIcon, Zap } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { DisputeGenerator } from "@/components/DisputeGenerator";
@@ -18,12 +18,18 @@ import { CreditRecommendations } from "@/components/CreditRecommendations";
 import { EducationCenter } from "@/components/EducationCenter";
 import { OnboardingTour } from "@/components/OnboardingTour";
 import { EmailPreferences } from "@/components/EmailPreferences";
+import { ScoreSimulator } from "@/components/ScoreSimulator";
+import { DeadlineMonitor } from "@/components/DeadlineMonitor";
+import { AchievementBadge } from "@/components/AchievementBadge";
+import { CreditBuilderTools } from "@/components/CreditBuilderTools";
+import { NotificationCenter } from "@/components/NotificationCenter";
 import { analytics } from "@/lib/analytics";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [uploadingFile, setUploadingFile] = useState(false);
+  const [achievements, setAchievements] = useState<any[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -33,6 +39,7 @@ const Dashboard = () => {
         navigate("/auth");
       } else {
         setUser(session.user);
+        loadAchievements(session.user.id);
       }
       setLoading(false);
     });
@@ -49,6 +56,33 @@ const Dashboard = () => {
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const loadAchievements = async (userId: string) => {
+    const { data } = await supabase
+      .from("user_achievements")
+      .select("*")
+      .eq("user_id", userId)
+      .order("earned_at", { ascending: false })
+      .limit(5);
+    
+    if (data) setAchievements(data);
+  };
+
+  const awardAchievement = async (type: string) => {
+    if (!user) return;
+    
+    const { error } = await supabase
+      .from("user_achievements")
+      .insert({ user_id: user.id, achievement_type: type });
+    
+    if (!error) {
+      loadAchievements(user.id);
+      toast({
+        title: "🏆 Achievement Unlocked!",
+        description: `You earned: ${type.replace(/_/g, ' ').toUpperCase()}`,
+      });
+    }
+  };
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -202,13 +236,16 @@ const Dashboard = () => {
             .update({ status: 'analyzed' })
             .eq('id', reportData.id);
 
-          // Track analytics
-          analytics.reportUploaded(file.name, file.size);
+      // Track analytics
+      analytics.reportUploaded(file.name, file.size);
 
-          toast({
-            title: "Analysis Complete!",
-            description: `Found ${analysisData?.count || 0} potential issues to review`,
-          });
+      // Award achievement
+      awardAchievement('first_upload');
+
+      toast({
+        title: "Analysis Complete!",
+        description: `Found ${analysisData?.count || 0} potential issues to review`,
+      });
         };
 
         fileReader.readAsDataURL(file);
@@ -280,12 +317,23 @@ const Dashboard = () => {
 
       <div className="container mx-auto px-4 py-4 sm:py-8">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-4xl font-bold mb-2">Welcome Back</h1>
-          <p className="text-sm sm:text-base text-muted-foreground">Your credit optimization command center</p>
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-2xl sm:text-4xl font-bold mb-2">Welcome Back</h1>
+              <p className="text-sm sm:text-base text-muted-foreground">Your credit optimization command center</p>
+            </div>
+            {achievements.length > 0 && (
+              <div className="flex flex-wrap gap-2 max-w-md">
+                {achievements.map((achievement) => (
+                  <AchievementBadge key={achievement.id} achievement={achievement} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <Tabs defaultValue="upload" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-1">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-1">
             <TabsTrigger value="upload" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
               <Upload className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>Upload</span>
@@ -317,6 +365,14 @@ const Dashboard = () => {
             <TabsTrigger value="learn" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
               <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>Learn</span>
+            </TabsTrigger>
+            <TabsTrigger value="simulator" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Simulator</span>
+            </TabsTrigger>
+            <TabsTrigger value="builder" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Zap className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Build</span>
             </TabsTrigger>
           </TabsList>
 
@@ -387,7 +443,8 @@ const Dashboard = () => {
             <FlaggedItemsList />
           </TabsContent>
 
-          <TabsContent value="disputes">
+          <TabsContent value="disputes" className="space-y-6">
+            <DeadlineMonitor />
             <DisputeTracker />
           </TabsContent>
 
@@ -405,6 +462,15 @@ const Dashboard = () => {
 
           <TabsContent value="learn">
             <EducationCenter />
+          </TabsContent>
+
+          <TabsContent value="simulator">
+            <ScoreSimulator />
+          </TabsContent>
+
+          <TabsContent value="builder" className="space-y-6">
+            <NotificationCenter />
+            <CreditBuilderTools />
           </TabsContent>
         </Tabs>
       </div>

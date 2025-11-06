@@ -1,0 +1,56 @@
+{
+  "name": "Credit Repair AI",
+  "short_name": "CreditAI",
+  "description": "Self-learning credit optimization platform that autonomously analyzes, disputes, and rebuilds your credit file",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/placeholder.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/placeholder.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "productivity", "utilities"],
+  "screenshots": [
+    {
+      "src": "/placeholder.svg",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Upload Report",
+      "short_name": "Upload",
+      "description": "Upload a new credit report",
+      "url": "/dashboard?tab=upload",
+      "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "View Disputes",
+      "short_name": "Disputes",
+      "description": "Check dispute status",
+      "url": "/dashboard?tab=disputes",
+      "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "AI Mentor",
+      "short_name": "Mentor",
+      "description": "Chat with Credit Mentor AI",
+      "url": "/dashboard?tab=mentor",
+      "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
+    }
+  ]
+}

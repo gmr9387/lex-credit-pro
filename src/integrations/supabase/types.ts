@@ -79,7 +79,10 @@ export type Database = {
       }
       disputes: {
         Row: {
+          auto_followup_scheduled: boolean | null
           bureau: string
+          cfpb_complaint_date: string | null
+          cfpb_complaint_filed: boolean | null
           created_at: string
           evidence_urls: string[] | null
           id: string
@@ -95,7 +98,10 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          auto_followup_scheduled?: boolean | null
           bureau: string
+          cfpb_complaint_date?: string | null
+          cfpb_complaint_filed?: boolean | null
           created_at?: string
           evidence_urls?: string[] | null
           id?: string
@@ -111,7 +117,10 @@ export type Database = {
           user_id: string
         }
         Update: {
+          auto_followup_scheduled?: boolean | null
           bureau?: string
+          cfpb_complaint_date?: string | null
+          cfpb_complaint_filed?: boolean | null
           created_at?: string
           evidence_urls?: string[] | null
           id?: string
@@ -141,7 +150,9 @@ export type Database = {
           created_at: string | null
           id: string
           notify_analysis_complete: boolean | null
+          notify_cfpb_escalation: boolean
           notify_dispute_deadline: boolean | null
+          notify_followup_needed: boolean
           notify_score_update: boolean | null
           updated_at: string | null
           user_id: string
@@ -150,7 +161,9 @@ export type Database = {
           created_at?: string | null
           id?: string
           notify_analysis_complete?: boolean | null
+          notify_cfpb_escalation?: boolean
           notify_dispute_deadline?: boolean | null
+          notify_followup_needed?: boolean
           notify_score_update?: boolean | null
           updated_at?: string | null
           user_id: string
@@ -159,7 +172,9 @@ export type Database = {
           created_at?: string | null
           id?: string
           notify_analysis_complete?: boolean | null
+          notify_cfpb_escalation?: boolean
           notify_dispute_deadline?: boolean | null
+          notify_followup_needed?: boolean
           notify_score_update?: boolean | null
           updated_at?: string | null
           user_id?: string
@@ -276,6 +291,30 @@ export type Database = {
         }
         Relationships: []
       }
+      score_simulations: {
+        Row: {
+          created_at: string
+          id: string
+          projected_score: number | null
+          simulation_data: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          projected_score?: number | null
+          simulation_data: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          projected_score?: number | null
+          simulation_data?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       score_snapshots: {
         Row: {
           bureau: string | null
@@ -299,6 +338,27 @@ export type Database = {
           notes?: string | null
           score?: number
           snapshot_date?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_achievements: {
+        Row: {
+          achievement_type: string
+          earned_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          achievement_type: string
+          earned_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          achievement_type?: string
+          earned_at?: string
+          id?: string
           user_id?: string
         }
         Relationships: []
