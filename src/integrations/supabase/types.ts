@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      action_plans: {
+        Row: {
+          action_type: string
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          description: string | null
+          due_date: string | null
+          estimated_impact: number | null
+          id: string
+          metadata: Json | null
+          priority: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          estimated_impact?: number | null
+          id?: string
+          metadata?: Json | null
+          priority?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          estimated_impact?: number | null
+          id?: string
+          metadata?: Json | null
+          priority?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       analytics_events: {
         Row: {
           created_at: string | null
@@ -35,6 +80,95 @@ export type Database = {
           event_name?: string
           id?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      bureau_responses: {
+        Row: {
+          bureau: string
+          created_at: string
+          dispute_id: string | null
+          id: string
+          items_affected: Json | null
+          next_action: string | null
+          notes: string | null
+          response_date: string | null
+          response_document_url: string | null
+          response_type: string
+          user_id: string
+        }
+        Insert: {
+          bureau: string
+          created_at?: string
+          dispute_id?: string | null
+          id?: string
+          items_affected?: Json | null
+          next_action?: string | null
+          notes?: string | null
+          response_date?: string | null
+          response_document_url?: string | null
+          response_type: string
+          user_id: string
+        }
+        Update: {
+          bureau?: string
+          created_at?: string
+          dispute_id?: string | null
+          id?: string
+          items_affected?: Json | null
+          next_action?: string | null
+          notes?: string | null
+          response_date?: string | null
+          response_document_url?: string | null
+          response_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bureau_responses_dispute_id_fkey"
+            columns: ["dispute_id"]
+            isOneToOne: false
+            referencedRelation: "disputes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credit_milestones: {
+        Row: {
+          achieved: boolean
+          achieved_at: string | null
+          created_at: string
+          description: string | null
+          id: string
+          metadata: Json | null
+          milestone_type: string
+          target_date: string | null
+          target_score: number | null
+          user_id: string
+        }
+        Insert: {
+          achieved?: boolean
+          achieved_at?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          milestone_type: string
+          target_date?: string | null
+          target_score?: number | null
+          user_id: string
+        }
+        Update: {
+          achieved?: boolean
+          achieved_at?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          milestone_type?: string
+          target_date?: string | null
+          target_score?: number | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -266,6 +400,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      goodwill_letters: {
+        Row: {
+          account_number: string | null
+          created_at: string
+          creditor_name: string
+          id: string
+          late_payment_date: string | null
+          letter_content: string
+          outcome: string | null
+          reason: string | null
+          relationship_length: string | null
+          response_date: string | null
+          sent_date: string | null
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_number?: string | null
+          created_at?: string
+          creditor_name: string
+          id?: string
+          late_payment_date?: string | null
+          letter_content: string
+          outcome?: string | null
+          reason?: string | null
+          relationship_length?: string | null
+          response_date?: string | null
+          sent_date?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_number?: string | null
+          created_at?: string
+          creditor_name?: string
+          id?: string
+          late_payment_date?: string | null
+          letter_content?: string
+          outcome?: string | null
+          reason?: string | null
+          relationship_length?: string | null
+          response_date?: string | null
+          sent_date?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {

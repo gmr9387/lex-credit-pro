@@ -4,7 +4,7 @@ import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut, MessageSquare, Loader2, Settings as SettingsIcon, Zap } from "lucide-react";
+import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut, MessageSquare, Loader2, Settings as SettingsIcon, Zap, Calendar, Calculator, Heart, CalendarDays } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { DisputeGenerator } from "@/components/DisputeGenerator";
@@ -23,6 +23,11 @@ import { DeadlineMonitor } from "@/components/DeadlineMonitor";
 import { AchievementBadge } from "@/components/AchievementBadge";
 import { CreditBuilderTools } from "@/components/CreditBuilderTools";
 import { NotificationCenter } from "@/components/NotificationCenter";
+import { CreditTimeline } from "@/components/CreditTimeline";
+import { DebtPayoffCalculator } from "@/components/DebtPayoffCalculator";
+import { GoodwillLetterGenerator } from "@/components/GoodwillLetterGenerator";
+import { BureauResponseTracker } from "@/components/BureauResponseTracker";
+import { WeeklyActionPlan } from "@/components/WeeklyActionPlan";
 import { analytics } from "@/lib/analytics";
 
 const Dashboard = () => {
@@ -374,6 +379,26 @@ const Dashboard = () => {
               <Zap className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>Build</span>
             </TabsTrigger>
+            <TabsTrigger value="timeline" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Timeline</span>
+            </TabsTrigger>
+            <TabsTrigger value="payoff" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Calculator className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Payoff</span>
+            </TabsTrigger>
+            <TabsTrigger value="goodwill" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Goodwill</span>
+            </TabsTrigger>
+            <TabsTrigger value="responses" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Responses</span>
+            </TabsTrigger>
+            <TabsTrigger value="weekly" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <CalendarDays className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Weekly</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="upload" className="space-y-6">
@@ -471,6 +496,26 @@ const Dashboard = () => {
           <TabsContent value="builder" className="space-y-6">
             <NotificationCenter />
             <CreditBuilderTools />
+          </TabsContent>
+
+          <TabsContent value="timeline">
+            <CreditTimeline />
+          </TabsContent>
+
+          <TabsContent value="payoff">
+            <DebtPayoffCalculator />
+          </TabsContent>
+
+          <TabsContent value="goodwill">
+            <GoodwillLetterGenerator />
+          </TabsContent>
+
+          <TabsContent value="responses">
+            <BureauResponseTracker />
+          </TabsContent>
+
+          <TabsContent value="weekly">
+            <WeeklyActionPlan />
           </TabsContent>
         </Tabs>
       </div>

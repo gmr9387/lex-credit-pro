@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.check-dispute-deadlines]
 verify_jwt = false
+
+[functions.generate-goodwill-letter]
+verify_jwt = true
