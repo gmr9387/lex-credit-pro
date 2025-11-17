@@ -10,6 +10,7 @@ import Admin from "./pages/Admin";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { InstallPrompt } from "./components/InstallPrompt";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,7 @@ const App = () => (
       <ErrorBoundary>
         <Toaster />
         <Sonner />
+        <InstallPrompt />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Landing />} />
