@@ -4,7 +4,7 @@ import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut, MessageSquare, Loader2, Settings as SettingsIcon, Zap, Calendar, Calculator, Heart, CalendarDays } from "lucide-react";
+import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut, MessageSquare, Loader2, Settings as SettingsIcon, Zap, Calendar, Calculator, Heart, CalendarDays, Target, Award, DollarSign, Mail, FileCheck, ClipboardList } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { DisputeGenerator } from "@/components/DisputeGenerator";
@@ -29,6 +29,7 @@ import { GoodwillLetterGenerator } from "@/components/GoodwillLetterGenerator";
 import { BureauResponseTracker } from "@/components/BureauResponseTracker";
 import { WeeklyActionPlan } from "@/components/WeeklyActionPlan";
 import { analytics } from "@/lib/analytics";
+import { AdvancedAnalytics } from "@/components/AdvancedAnalytics";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -397,47 +398,6 @@ const Dashboard = () => {
             </TabsTrigger>
             <TabsTrigger value="weekly" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
               <ClipboardList className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>Weekly</span>
-            </TabsTrigger>
-          </TabsList>
-            <TabsTrigger value="mentor" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-              <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>Mentor</span>
-            </TabsTrigger>
-            <TabsTrigger value="advisor" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-              <Brain className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>Advisor</span>
-            </TabsTrigger>
-            <TabsTrigger value="learn" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-              <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>Learn</span>
-            </TabsTrigger>
-            <TabsTrigger value="simulator" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-              <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>Simulator</span>
-            </TabsTrigger>
-            <TabsTrigger value="builder" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-              <Zap className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>Build</span>
-            </TabsTrigger>
-            <TabsTrigger value="timeline" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-              <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>Timeline</span>
-            </TabsTrigger>
-            <TabsTrigger value="payoff" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-              <Calculator className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>Payoff</span>
-            </TabsTrigger>
-            <TabsTrigger value="goodwill" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-              <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>Goodwill</span>
-            </TabsTrigger>
-            <TabsTrigger value="responses" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-              <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>Responses</span>
-            </TabsTrigger>
-            <TabsTrigger value="weekly" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-              <CalendarDays className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>Weekly</span>
             </TabsTrigger>
           </TabsList>
