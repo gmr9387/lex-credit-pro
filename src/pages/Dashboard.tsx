@@ -338,7 +338,7 @@ const Dashboard = () => {
         </div>
 
         <Tabs defaultValue="upload" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-1">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 lg:grid-cols-11 gap-1">
             <TabsTrigger value="upload" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
               <Upload className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>Upload</span>
@@ -359,6 +359,47 @@ const Dashboard = () => {
               <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>Scores</span>
             </TabsTrigger>
+            <TabsTrigger value="mentor" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Mentor</span>
+            </TabsTrigger>
+            <TabsTrigger value="advisor" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Target className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Advisor</span>
+            </TabsTrigger>
+            <TabsTrigger value="learn" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Award className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Learn</span>
+            </TabsTrigger>
+            <TabsTrigger value="simulator" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Target className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Simulator</span>
+            </TabsTrigger>
+            <TabsTrigger value="builder" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Builder</span>
+            </TabsTrigger>
+            <TabsTrigger value="timeline" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Timeline</span>
+            </TabsTrigger>
+            <TabsTrigger value="payoff" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <DollarSign className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Payoff</span>
+            </TabsTrigger>
+            <TabsTrigger value="goodwill" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Mail className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Goodwill</span>
+            </TabsTrigger>
+            <TabsTrigger value="responses" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <FileCheck className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Responses</span>
+            </TabsTrigger>
+            <TabsTrigger value="weekly" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <ClipboardList className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Weekly</span>
+            </TabsTrigger>
+          </TabsList>
             <TabsTrigger value="mentor" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
               <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>Mentor</span>
@@ -516,6 +557,10 @@ const Dashboard = () => {
 
           <TabsContent value="weekly">
             <WeeklyActionPlan />
+          </TabsContent>
+
+          <TabsContent value="analytics">
+            <AdvancedAnalytics />
           </TabsContent>
         </Tabs>
       </div>

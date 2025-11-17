@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Shield, FileText, TrendingUp, Brain, Lock, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SuccessStories } from "@/components/SuccessStories";
 
 const Landing = () => {
   const features = [
@@ -152,6 +153,11 @@ const Landing = () => {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Success Stories */}
+      <div className="container mx-auto px-4 py-20">
+        <SuccessStories />
       </div>
 
       {/* CTA Section */}

@@ -19,42 +19,46 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    const analysisPrompt = `You are a credit report analysis expert. Analyze the following credit report and identify ALL potential errors, inaccuracies, and issues that could be disputed under the Fair Credit Reporting Act (FCRA).
+const analysisPrompt = `You are an elite FCRA credit analyst with expertise in consumer protection law and credit scoring algorithms.
 
-For EACH issue you find, provide:
-1. Account name/creditor
-2. Account type (credit card, loan, collection, etc.)
-3. Issue type (duplicate, obsolete, inaccurate_balance, identity_mismatch, unauthorized, or other)
-4. Detailed description of the problem
-5. Confidence score (0.0 to 1.0) - how certain you are this is an error
-6. Balance (if applicable)
-7. Date opened (if available)
+ANALYSIS FRAMEWORK:
+1. Score Impact Assessment - Prioritize items by their effect on FICO scores
+2. Legal Vulnerability - Identify FCRA/FDCPA violations with specific statute citations
+3. Dispute Success Probability - Rate based on documentation strength and legal precedent
+4. Timeline Optimization - Flag items approaching statute of limitations
 
-Common issues to look for:
-- Duplicate accounts (same account reported multiple times)
-- Obsolete accounts (older than 7 years for most items, 10 for bankruptcy)
-- Inaccurate balances or payment history
-- Accounts you don't recognize (identity theft)
-- Incorrect personal information
-- Accounts with wrong dates
-- Mixed files (accounts belonging to someone else)
-- Late payments reported incorrectly
-
-Return ONLY a valid JSON array of issues. Each issue must follow this exact format:
+For each issue, provide a JSON object with these fields:
 {
-  "accountName": "string",
-  "accountType": "string",
-  "issueType": "duplicate|obsolete|inaccurate_balance|identity_mismatch|unauthorized|other",
-  "description": "string",
+  "accountName": "exact account name or identifier from report",
+  "accountType": "credit_card | personal_loan | auto_loan | mortgage | collection | charge_off | inquiry | public_record",
+  "issueType": "duplicate | obsolete | inaccurate_balance | identity_mismatch | unauthorized | incorrect_date | payment_history_error | settled_not_updated | mixed_file | reaged_debt",
+  "description": "precise explanation with specific inaccuracies found and their impact on credit score (include exact discrepancies, dates, amounts)",
   "confidenceScore": 0.0-1.0,
   "balance": number or null,
-  "dateOpened": "YYYY-MM-DD" or null
+  "dateOpened": "YYYY-MM-DD" or null,
+  "recommendedAction": "specific dispute strategy (e.g., 'Method of Verification request under 15 USC 1681i(a)(1)', 'Demand deletion per 7-year rule 15 USC 1681c')",
+  "legalBasis": "specific FCRA section (e.g., '15 USC 1681i - Dispute verification', '15 USC 1681c(a)(4) - 7-year obsolescence')",
+  "scoreImpact": "estimated score increase if removed (e.g., '+15-25 points', '+40-60 points')",
+  "disputeStrength": "strong | moderate | weak",
+  "urgency": "immediate | high | normal"
 }
+
+PRIORITY SCAN AREAS:
+✓ Obsolete items (>7yrs for most negatives, >10yrs for Ch7 bankruptcy)
+✓ Duplicate accounts with different creditors/collectors
+✓ Re-aged debt (illegal under FCRA 15 USC 1681c(a))
+✓ Incorrect payment history vs actual records
+✓ Settled/paid accounts still showing negative
+✓ Unauthorized hard inquiries (>2yrs old or no permissible purpose)
+✓ Mixed files (accounts from someone with similar name/SSN)
+✓ Balance errors exceeding $50
+✓ Incorrect account status (Open vs Closed, Current vs Delinquent)
+✓ Missing "Dispute" notation when consumer disputed directly with furnisher
 
 Credit Report Content:
 ${reportText}
 
-Return ONLY the JSON array, no other text.`;
+Return ONLY a valid JSON array of issues. No markdown, no code blocks, no explanatory text.`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
