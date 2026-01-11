@@ -30,6 +30,10 @@ import { BureauResponseTracker } from "@/components/BureauResponseTracker";
 import { WeeklyActionPlan } from "@/components/WeeklyActionPlan";
 import { analytics } from "@/lib/analytics";
 import { AdvancedAnalytics } from "@/components/AdvancedAnalytics";
+import { EnhancedOnboarding } from "@/components/EnhancedOnboarding";
+import { OfflineIndicator } from "@/components/OfflineIndicator";
+import { PushNotificationPrompt } from "@/components/PushNotificationPrompt";
+import { AICreditCoach } from "@/components/AICreditCoach";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -296,6 +300,9 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <EnhancedOnboarding />
+      <OfflineIndicator />
+      <PushNotificationPrompt />
       <header className="border-b border-border/50 bg-card/50 backdrop-blur sticky top-0 z-50">
         <div className="container mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
