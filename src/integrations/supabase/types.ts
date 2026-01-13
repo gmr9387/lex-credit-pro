@@ -527,6 +527,48 @@ export type Database = {
         }
         Relationships: []
       }
+      success_stories: {
+        Row: {
+          created_at: string
+          display_name: string
+          final_score: number
+          id: string
+          initial_score: number
+          is_approved: boolean
+          items_removed: number
+          testimony: string
+          timeframe_months: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          final_score: number
+          id?: string
+          initial_score: number
+          is_approved?: boolean
+          items_removed?: number
+          testimony: string
+          timeframe_months: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          final_score?: number
+          id?: string
+          initial_score?: number
+          is_approved?: boolean
+          items_removed?: number
+          testimony?: string
+          timeframe_months?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_achievements: {
         Row: {
           achievement_type: string
