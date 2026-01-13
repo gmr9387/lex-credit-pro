@@ -207,6 +207,8 @@ export const DisputeTracker = () => {
               bureau={dispute.bureau}
               letterContent={dispute.letter_content}
               status={dispute.status || 'draft'}
+              sentDate={dispute.sent_date}
+              responseDeadline={dispute.response_deadline}
               onUpdate={fetchDisputes}
             />
           </CardContent>

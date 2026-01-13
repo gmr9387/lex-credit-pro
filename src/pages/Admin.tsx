@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Shield, Activity, AlertCircle, Users, ArrowLeft, BarChart3 } from "lucide-react";
+import { Shield, Activity, AlertCircle, Users, ArrowLeft, BarChart3, Trophy, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,6 +11,18 @@ import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AdminAnalyticsDashboard } from "@/components/AdminAnalyticsDashboard";
 
+interface SuccessStory {
+  id: string;
+  display_name: string;
+  initial_score: number;
+  final_score: number;
+  timeframe_months: number;
+  items_removed: number;
+  testimony: string;
+  is_approved: boolean;
+  created_at: string;
+}
+
 const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -19,6 +31,7 @@ const Admin = () => {
   const [analytics, setAnalytics] = useState<any[]>([]);
   const [errorLogs, setErrorLogs] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
+  const [stories, setStories] = useState<SuccessStory[]>([]);
 
   useEffect(() => {
     checkAdminAccess();
@@ -86,8 +99,42 @@ const Admin = () => {
         .order("created_at", { ascending: false })
         .limit(50);
       setUsers(profilesData || []);
+
+      // Load success stories for moderation
+      const { data: storiesData } = await supabase
+        .from("success_stories")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(50);
+      setStories(storiesData || []);
     } catch (error) {
       console.error("Error loading admin data:", error);
+    }
+  };
+
+  const handleApproveStory = async (storyId: string, approve: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("success_stories")
+        .update({ is_approved: approve })
+        .eq("id", storyId);
+
+      if (error) throw error;
+
+      setStories(prev => prev.map(s => 
+        s.id === storyId ? { ...s, is_approved: approve } : s
+      ));
+
+      toast({
+        title: approve ? "Story Approved" : "Story Rejected",
+        description: approve ? "The story is now visible to all users" : "The story has been hidden",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
 
@@ -139,6 +186,10 @@ const Admin = () => {
             <TabsTrigger value="users">
               <Users className="h-4 w-4 mr-2" />
               Users
+            </TabsTrigger>
+            <TabsTrigger value="stories">
+              <Trophy className="h-4 w-4 mr-2" />
+              Stories
             </TabsTrigger>
           </TabsList>
 
@@ -245,6 +296,79 @@ const Admin = () => {
                     ))}
                   </TableBody>
                 </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="stories">
+            <Card>
+              <CardHeader>
+                <CardTitle>Success Story Moderation</CardTitle>
+                <CardDescription>Approve or reject user-submitted success stories</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {stories.length === 0 ? (
+                  <p className="text-center text-muted-foreground py-8">No stories submitted yet</p>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Score Change</TableHead>
+                        <TableHead>Timeframe</TableHead>
+                        <TableHead>Testimony</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {stories.map((story) => (
+                        <TableRow key={story.id}>
+                          <TableCell className="font-medium">{story.display_name}</TableCell>
+                          <TableCell>
+                            <span className="text-destructive">{story.initial_score}</span>
+                            <span className="mx-1">→</span>
+                            <span className="text-green-500">{story.final_score}</span>
+                            <span className="text-xs text-muted-foreground ml-1">
+                              (+{story.final_score - story.initial_score})
+                            </span>
+                          </TableCell>
+                          <TableCell>{story.timeframe_months} months</TableCell>
+                          <TableCell className="max-w-xs truncate">{story.testimony}</TableCell>
+                          <TableCell>
+                            <Badge variant={story.is_approved ? "default" : "secondary"}>
+                              {story.is_approved ? "Approved" : "Pending"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex gap-2">
+                              {!story.is_approved && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-green-600"
+                                  onClick={() => handleApproveStory(story.id, true)}
+                                >
+                                  <Check className="h-4 w-4" />
+                                </Button>
+                              )}
+                              {story.is_approved && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-destructive"
+                                  onClick={() => handleApproveStory(story.id, false)}
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

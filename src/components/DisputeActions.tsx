@@ -4,25 +4,55 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Calendar } from '@/components/ui/calendar';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Mail, Printer, Calendar as CalendarIcon, CheckCircle2 } from 'lucide-react';
+import { Mail, Printer, CheckCircle2, AlertTriangle, Download } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { analytics } from '@/lib/analytics';
+import { CFPBEscalationWizard } from './CFPBEscalationWizard';
+import { generateDisputePDF } from '@/lib/exportUtils';
 
 interface DisputeActionsProps {
   disputeId: string;
   bureau: string;
   letterContent: string;
   status: string;
+  sentDate?: string | null;
+  responseDeadline?: string | null;
   onUpdate: () => void;
 }
 
-export const DisputeActions = ({ disputeId, bureau, letterContent, status, onUpdate }: DisputeActionsProps) => {
+export const DisputeActions = ({ 
+  disputeId, 
+  bureau, 
+  letterContent, 
+  status, 
+  sentDate: existingSentDate,
+  responseDeadline: existingDeadline,
+  onUpdate 
+}: DisputeActionsProps) => {
   const [sentDate, setSentDate] = useState<Date>();
-  const [responseDeadline, setResponseDeadline] = useState<Date>();
   const [outcome, setOutcome] = useState('');
   const [loading, setLoading] = useState(false);
+  const [cfpbWizardOpen, setCfpbWizardOpen] = useState(false);
   const { toast } = useToast();
+
+  const isOverdue = existingDeadline && new Date(existingDeadline) < new Date() && status !== 'resolved';
+
+  const handleDownloadPDF = () => {
+    try {
+      generateDisputePDF(letterContent, bureau);
+      toast({
+        title: 'PDF Downloaded',
+        description: `Dispute letter for ${bureau} saved as PDF`,
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Download Failed',
+        description: error.message,
+        variant: 'destructive',
+      });
+    }
+  };
 
   const handlePrint = () => {
     const printWindow = window.open('', '_blank');
@@ -127,11 +157,17 @@ export const DisputeActions = ({ disputeId, bureau, letterContent, status, onUpd
   };
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <Button variant="outline" size="sm" onClick={handlePrint}>
-        <Printer className="h-4 w-4 mr-2" />
-        Print
-      </Button>
+    <>
+      <div className="flex flex-wrap gap-2">
+        <Button variant="outline" size="sm" onClick={handlePrint}>
+          <Printer className="h-4 w-4 mr-2" />
+          Print
+        </Button>
+
+        <Button variant="outline" size="sm" onClick={handleDownloadPDF}>
+          <Download className="h-4 w-4 mr-2" />
+          PDF
+        </Button>
 
       {status === 'draft' && (
         <Dialog>
@@ -200,6 +236,36 @@ export const DisputeActions = ({ disputeId, bureau, letterContent, status, onUpd
           </DialogContent>
         </Dialog>
       )}
+
+      {isOverdue && (
+        <Button 
+          variant="destructive" 
+          size="sm" 
+          onClick={() => setCfpbWizardOpen(true)}
+        >
+          <AlertTriangle className="h-4 w-4 mr-2" />
+          CFPB Escalation
+        </Button>
+      )}
     </div>
+
+    {existingSentDate && existingDeadline && (
+      <CFPBEscalationWizard
+        open={cfpbWizardOpen}
+        onOpenChange={setCfpbWizardOpen}
+        dispute={{
+          id: disputeId,
+          bureau,
+          sent_date: existingSentDate,
+          response_deadline: existingDeadline,
+          letter_content: letterContent,
+        }}
+        onComplete={() => {
+          setCfpbWizardOpen(false);
+          onUpdate();
+        }}
+      />
+    )}
+    </>
   );
 };

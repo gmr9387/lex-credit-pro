@@ -4,7 +4,7 @@ import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut, MessageSquare, Loader2, Settings as SettingsIcon, Zap, Calendar, Calculator, Heart, CalendarDays, Target, Award, DollarSign, Mail, FileCheck, ClipboardList } from "lucide-react";
+import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut, MessageSquare, Loader2, Settings as SettingsIcon, Zap, Calendar, Calculator, Heart, CalendarDays, Target, Award, DollarSign, Mail, FileCheck, ClipboardList, BarChart3, Trophy } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { DisputeGenerator } from "@/components/DisputeGenerator";
@@ -34,6 +34,7 @@ import { EnhancedOnboarding } from "@/components/EnhancedOnboarding";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
 import { PushNotificationPrompt } from "@/components/PushNotificationPrompt";
 import { AICreditCoach } from "@/components/AICreditCoach";
+import { SuccessStories } from "@/components/SuccessStories";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -407,6 +408,14 @@ const Dashboard = () => {
               <ClipboardList className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>Weekly</span>
             </TabsTrigger>
+            <TabsTrigger value="analytics" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Analytics</span>
+            </TabsTrigger>
+            <TabsTrigger value="stories" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Trophy className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Stories</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="upload" className="space-y-6">
@@ -529,6 +538,10 @@ const Dashboard = () => {
 
           <TabsContent value="analytics">
             <AdvancedAnalytics />
+          </TabsContent>
+
+          <TabsContent value="stories">
+            <SuccessStories allowSubmission={true} />
           </TabsContent>
         </Tabs>
       </div>
