@@ -485,7 +485,8 @@ const Dashboard = () => {
             <ScoreTracker />
           </TabsContent>
 
-          <TabsContent value="mentor">
+          <TabsContent value="mentor" className="space-y-6">
+            <AICreditCoach />
             <CreditMentor />
           </TabsContent>
 

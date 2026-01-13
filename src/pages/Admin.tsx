@@ -122,11 +122,15 @@ const Admin = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <Tabs defaultValue="analytics" className="space-y-6">
+        <Tabs defaultValue="overview" className="space-y-6">
           <TabsList>
+            <TabsTrigger value="overview">
+              <BarChart3 className="h-4 w-4 mr-2" />
+              Overview
+            </TabsTrigger>
             <TabsTrigger value="analytics">
               <Activity className="h-4 w-4 mr-2" />
-              Analytics
+              Events
             </TabsTrigger>
             <TabsTrigger value="errors">
               <AlertCircle className="h-4 w-4 mr-2" />
@@ -137,6 +141,10 @@ const Admin = () => {
               Users
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="overview">
+            <AdminAnalyticsDashboard />
+          </TabsContent>
 
           <TabsContent value="analytics">
             <Card>
