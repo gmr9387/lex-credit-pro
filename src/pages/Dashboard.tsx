@@ -4,7 +4,7 @@ import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut, MessageSquare, Loader2, Settings as SettingsIcon, Zap, Calendar, Calculator, Heart, CalendarDays, Target, Award, DollarSign, Mail, FileCheck, ClipboardList, BarChart3, Trophy } from "lucide-react";
+import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut, MessageSquare, Loader2, Settings as SettingsIcon, Zap, Calendar, Calculator, Heart, CalendarDays, Target, Award, DollarSign, Mail, FileCheck, ClipboardList, BarChart3, Trophy, Flame, GraduationCap, FileStack, FileDown } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { DisputeGenerator } from "@/components/DisputeGenerator";
@@ -35,6 +35,11 @@ import { OfflineIndicator } from "@/components/OfflineIndicator";
 import { PushNotificationPrompt } from "@/components/PushNotificationPrompt";
 import { AICreditCoach } from "@/components/AICreditCoach";
 import { SuccessStories } from "@/components/SuccessStories";
+import { GamificationSystem } from "@/components/GamificationSystem";
+import { CreditEducationQuiz } from "@/components/CreditEducationQuiz";
+import { BatchDisputeGenerator } from "@/components/BatchDisputeGenerator";
+import { CalendarDeadlineView } from "@/components/CalendarDeadlineView";
+import { JourneyReportExport } from "@/components/JourneyReportExport";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -416,6 +421,26 @@ const Dashboard = () => {
               <Trophy className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>Stories</span>
             </TabsTrigger>
+            <TabsTrigger value="gamification" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Flame className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>XP</span>
+            </TabsTrigger>
+            <TabsTrigger value="quiz" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <GraduationCap className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Quiz</span>
+            </TabsTrigger>
+            <TabsTrigger value="batch" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <FileStack className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Batch</span>
+            </TabsTrigger>
+            <TabsTrigger value="calendar" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <CalendarDays className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Calendar</span>
+            </TabsTrigger>
+            <TabsTrigger value="journey" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <FileDown className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Journey</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="upload" className="space-y-6">
@@ -542,6 +567,26 @@ const Dashboard = () => {
 
           <TabsContent value="stories">
             <SuccessStories allowSubmission={true} />
+          </TabsContent>
+
+          <TabsContent value="gamification">
+            {user && <GamificationSystem userId={user.id} />}
+          </TabsContent>
+
+          <TabsContent value="quiz">
+            {user && <CreditEducationQuiz userId={user.id} />}
+          </TabsContent>
+
+          <TabsContent value="batch">
+            {user && <BatchDisputeGenerator userId={user.id} />}
+          </TabsContent>
+
+          <TabsContent value="calendar">
+            {user && <CalendarDeadlineView userId={user.id} />}
+          </TabsContent>
+
+          <TabsContent value="journey">
+            {user && <JourneyReportExport userId={user.id} />}
           </TabsContent>
         </Tabs>
       </div>
