@@ -1,9 +1,26 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.75.0";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Input validation schema
+const itemDetailsSchema = z.object({
+  accountName: z.string().max(200, "Account name too long"),
+  issueType: z.string().max(100, "Issue type too long"),
+  description: z.string().max(2000, "Description too long"),
+  balance: z.number().optional(),
+  dateOpened: z.string().max(50).optional(),
+});
+
+const requestSchema = z.object({
+  itemDetails: itemDetailsSchema,
+  bureau: z.enum(['Experian', 'TransUnion', 'Equifax', 'experian', 'transunion', 'equifax']),
+  roundNumber: z.number().int().min(1, "Round number must be at least 1").max(10, "Round number cannot exceed 10"),
+});
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -11,14 +28,56 @@ serve(async (req) => {
   }
 
   try {
-    const { itemDetails, bureau, roundNumber } = await req.json();
+    // Authentication check
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Parse and validate input
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: 'Invalid JSON body' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const validation = requestSchema.safeParse(body);
+    if (!validation.success) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid input', details: validation.error.issues }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { itemDetails, bureau, roundNumber } = validation.data;
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    console.log('Generating dispute letter for:', { itemDetails, bureau, roundNumber });
+    console.log('Generating dispute letter for user:', user.id, { bureau, roundNumber });
 
     const systemPrompt = `You are a legal expert specializing in FCRA (Fair Credit Reporting Act), FDCPA (Fair Debt Collection Practices Act), and CFPB regulations.
 
@@ -98,7 +157,7 @@ ${roundNumber > 1 ? 'This is a follow-up dispute. Use different wording and add 
     const data = await response.json();
     const letterContent = data.choices[0].message.content;
 
-    console.log('Dispute letter generated successfully');
+    console.log('Dispute letter generated successfully for user:', user.id);
 
     return new Response(
       JSON.stringify({ letterContent }),
