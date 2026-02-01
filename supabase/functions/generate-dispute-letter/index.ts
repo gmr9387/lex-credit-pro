@@ -12,8 +12,8 @@ const itemDetailsSchema = z.object({
   accountName: z.string().max(200, "Account name too long"),
   issueType: z.string().max(100, "Issue type too long"),
   description: z.string().max(2000, "Description too long"),
-  balance: z.number().optional(),
-  dateOpened: z.string().max(50).optional(),
+  balance: z.number().nullable().optional(),
+  dateOpened: z.string().max(50).nullable().optional(),
 });
 
 const requestSchema = z.object({
