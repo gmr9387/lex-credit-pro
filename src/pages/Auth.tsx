@@ -9,6 +9,7 @@ import { Shield, Chrome } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { lovable } from "@/integrations/lovable/index";
 import { useToast } from "@/hooks/use-toast";
+import { ForgotPasswordDialog } from "@/components/ForgotPasswordDialog";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -161,7 +162,10 @@ const Auth = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">Password</Label>
+                  {isLogin && <ForgotPasswordDialog />}
+                </div>
                 <Input 
                   id="password" 
                   type="password" 
