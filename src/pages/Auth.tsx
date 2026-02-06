@@ -241,6 +241,14 @@ const Auth = () => {
               <p>🔒 Your data is encrypted with AES-256</p>
               <p>✓ FCRA/FDCPA/CFPB Compliant</p>
               <p>✓ Free for Personal Use</p>
+              <div className="flex justify-center gap-4 pt-2">
+                <Link to="/terms" className="hover:text-primary transition-colors underline">
+                  Terms of Service
+                </Link>
+                <Link to="/privacy" className="hover:text-primary transition-colors underline">
+                  Privacy Policy
+                </Link>
+              </div>
             </div>
           </CardContent>
         </Card>
