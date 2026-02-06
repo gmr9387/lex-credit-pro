@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, TrendingUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle, TrendingUp, FileStack, Loader2, CheckCircle2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { FlaggedItemSkeleton } from '@/components/ui/skeletons';
 import { ExportButton } from './ExportButton';
@@ -19,9 +22,20 @@ interface FlaggedItem {
   date_opened: string;
 }
 
-export const FlaggedItemsList = () => {
+interface FlaggedItemsListProps {
+  userId?: string;
+  onDisputesGenerated?: () => void;
+}
+
+const BUREAUS = ['experian', 'transunion', 'equifax'] as const;
+
+export const FlaggedItemsList = ({ userId, onDisputesGenerated }: FlaggedItemsListProps) => {
   const [items, setItems] = useState<FlaggedItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [selectedBureaus, setSelectedBureaus] = useState<Set<string>>(new Set(['experian', 'transunion', 'equifax']));
+  const [generating, setGenerating] = useState(false);
+  const [generationProgress, setGenerationProgress] = useState({ current: 0, total: 0 });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -48,6 +62,119 @@ export const FlaggedItemsList = () => {
     }
   };
 
+  const toggleItemSelection = (id: string) => {
+    setSelectedItems(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const toggleBureauSelection = (bureau: string) => {
+    setSelectedBureaus(prev => {
+      const next = new Set(prev);
+      if (next.has(bureau)) {
+        next.delete(bureau);
+      } else {
+        next.add(bureau);
+      }
+      return next;
+    });
+  };
+
+  const selectAll = () => {
+    if (selectedItems.size === items.length) {
+      setSelectedItems(new Set());
+    } else {
+      setSelectedItems(new Set(items.map(item => item.id)));
+    }
+  };
+
+  const generateBatchDisputes = async () => {
+    if (!userId || selectedItems.size === 0 || selectedBureaus.size === 0) {
+      toast({
+        title: 'Selection Required',
+        description: 'Please select items and at least one bureau',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const selectedItemsList = items.filter(item => selectedItems.has(item.id));
+    const bureausList = Array.from(selectedBureaus);
+    const totalLetters = selectedItemsList.length * bureausList.length;
+
+    setGenerating(true);
+    setGenerationProgress({ current: 0, total: totalLetters });
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const item of selectedItemsList) {
+      for (const bureau of bureausList) {
+        try {
+          const { data: responseData, error } = await supabase.functions.invoke('generate-dispute-letter', {
+            body: {
+              itemDetails: {
+                accountName: item.account_name,
+                issueType: item.issue_type,
+                description: item.description || `Disputing ${item.issue_type} for ${item.account_name}`,
+                balance: item.balance || null,
+                dateOpened: item.date_opened || null,
+              },
+              bureau,
+              roundNumber: 1,
+            },
+          });
+
+          if (error) throw error;
+
+          // Save the dispute with reference to the flagged item
+          const { error: saveError } = await supabase
+            .from('disputes')
+            .insert({
+              user_id: userId,
+              bureau,
+              letter_content: responseData.letterContent,
+              status: 'draft',
+              round_number: 1,
+              item_id: item.id,
+            });
+
+          if (saveError) throw saveError;
+
+          successCount++;
+        } catch (error: any) {
+          console.error('Error generating letter for', item.account_name, bureau, error);
+          errorCount++;
+        }
+
+        setGenerationProgress(prev => ({ ...prev, current: prev.current + 1 }));
+      }
+    }
+
+    setGenerating(false);
+    setSelectedItems(new Set());
+
+    if (successCount > 0) {
+      toast({
+        title: 'Batch Generation Complete!',
+        description: `Generated ${successCount} dispute letters${errorCount > 0 ? ` (${errorCount} failed)` : ''}`,
+      });
+      if (onDisputesGenerated) onDisputesGenerated();
+    } else {
+      toast({
+        title: 'Generation Failed',
+        description: 'No letters were generated. Please try again.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   if (loading) {
     return <FlaggedItemSkeleton />;
   }
@@ -63,6 +190,8 @@ export const FlaggedItemsList = () => {
     );
   }
 
+  const totalLettersToGenerate = selectedItems.size * selectedBureaus.size;
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-4">
@@ -77,16 +206,109 @@ export const FlaggedItemsList = () => {
           label="Export Issues"
         />
       </div>
+
+      {/* Batch Generation Controls */}
+      <Card className="border-primary/20 bg-primary/5">
+        <CardHeader className="py-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <FileStack className="w-4 h-4" />
+            Batch Dispute Generation
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={selectAll}
+            >
+              {selectedItems.size === items.length ? 'Deselect All' : 'Select All'}
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              {selectedItems.size} of {items.length} items selected
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4">
+            <span className="text-sm font-medium">Send to:</span>
+            {BUREAUS.map(bureau => (
+              <div key={bureau} className="flex items-center gap-2">
+                <Checkbox
+                  id={`bureau-${bureau}`}
+                  checked={selectedBureaus.has(bureau)}
+                  onCheckedChange={() => toggleBureauSelection(bureau)}
+                />
+                <label htmlFor={`bureau-${bureau}`} className="text-sm capitalize cursor-pointer">
+                  {bureau}
+                </label>
+              </div>
+            ))}
+          </div>
+
+          {generating && (
+            <Alert>
+              <AlertDescription>
+                <div className="flex items-center gap-3">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>
+                    Generating letters... {generationProgress.current}/{generationProgress.total}
+                  </span>
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <Button
+            onClick={generateBatchDisputes}
+            disabled={generating || selectedItems.size === 0 || selectedBureaus.size === 0 || !userId}
+            className="w-full"
+          >
+            {generating ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Generating ({generationProgress.current}/{generationProgress.total})...
+              </>
+            ) : (
+              <>
+                <FileStack className="w-4 h-4 mr-2" />
+                Generate {totalLettersToGenerate} Dispute Letters
+              </>
+            )}
+          </Button>
+        </CardContent>
+      </Card>
       
+      {/* Flagged Items List */}
       {items.map((item) => (
-        <Card key={item.id} className="border-l-4 border-l-destructive">
+        <Card 
+          key={item.id} 
+          className={`border-l-4 transition-colors cursor-pointer ${
+            selectedItems.has(item.id) 
+              ? 'border-l-primary bg-primary/5' 
+              : 'border-l-destructive hover:bg-muted/50'
+          }`}
+          onClick={() => toggleItemSelection(item.id)}
+        >
           <CardHeader>
             <div className="flex items-start justify-between">
-              <div className="flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-destructive" />
-                <CardTitle className="text-lg">{item.account_name}</CardTitle>
+              <div className="flex items-center gap-3">
+                <Checkbox
+                  checked={selectedItems.has(item.id)}
+                  onCheckedChange={() => toggleItemSelection(item.id)}
+                  onClick={(e) => e.stopPropagation()}
+                />
+                <div className="flex items-center gap-2">
+                  {selectedItems.has(item.id) ? (
+                    <CheckCircle2 className="h-5 w-5 text-primary" />
+                  ) : (
+                    <AlertCircle className="h-5 w-5 text-destructive" />
+                  )}
+                  <CardTitle className="text-lg">{item.account_name}</CardTitle>
+                </div>
               </div>
-              <Badge variant="destructive">{item.issue_type}</Badge>
+              <Badge variant={selectedItems.has(item.id) ? 'default' : 'destructive'}>
+                {item.issue_type}
+              </Badge>
             </div>
           </CardHeader>
           <CardContent>
