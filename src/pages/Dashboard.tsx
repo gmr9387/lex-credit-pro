@@ -507,7 +507,7 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="issues">
-            <FlaggedItemsList />
+            {user && <FlaggedItemsList userId={user.id} />}
           </TabsContent>
 
           <TabsContent value="disputes" className="space-y-6">
