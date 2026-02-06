@@ -181,6 +181,14 @@ const Landing = () => {
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
           <p>© 2025 Credit Repair AI. Built with enterprise-grade security and compliance.</p>
           <p className="mt-2">FCRA/FDCPA/CFPB Compliant | Your data never leaves your control</p>
+          <div className="flex justify-center gap-6 mt-4">
+            <Link to="/terms" className="hover:text-primary transition-colors underline">
+              Terms of Service
+            </Link>
+            <Link to="/privacy" className="hover:text-primary transition-colors underline">
+              Privacy Policy
+            </Link>
+          </div>
         </div>
       </footer>
     </div>
