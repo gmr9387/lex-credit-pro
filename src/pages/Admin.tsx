@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AdminAnalyticsDashboard } from "@/components/AdminAnalyticsDashboard";
+import { AdminUserManagement } from "@/components/AdminUserManagement";
 
 interface SuccessStory {
   id: string;
@@ -30,7 +31,6 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [analytics, setAnalytics] = useState<any[]>([]);
   const [errorLogs, setErrorLogs] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
   const [stories, setStories] = useState<SuccessStory[]>([]);
 
   useEffect(() => {
@@ -91,14 +91,6 @@ const Admin = () => {
         .order("created_at", { ascending: false })
         .limit(50);
       setErrorLogs(errorData || []);
-
-      // Load profiles for user management
-      const { data: profilesData } = await supabase
-        .from("profiles")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(50);
-      setUsers(profilesData || []);
 
       // Load success stories for moderation
       const { data: storiesData } = await supabase
@@ -270,34 +262,7 @@ const Admin = () => {
           </TabsContent>
 
           <TabsContent value="users">
-            <Card>
-              <CardHeader>
-                <CardTitle>User Management</CardTitle>
-                <CardDescription>Registered users and their profiles</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>User ID</TableHead>
-                      <TableHead>Joined</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {users.map((user) => (
-                      <TableRow key={user.id}>
-                        <TableCell className="font-medium">{user.full_name}</TableCell>
-                        <TableCell className="font-mono text-xs">{user.user_id?.slice(0, 8)}...</TableCell>
-                        <TableCell className="text-sm">
-                          {new Date(user.created_at).toLocaleString()}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+            <AdminUserManagement />
           </TabsContent>
 
           <TabsContent value="stories">
@@ -325,12 +290,12 @@ const Admin = () => {
                       {stories.map((story) => (
                         <TableRow key={story.id}>
                           <TableCell className="font-medium">{story.display_name}</TableCell>
-                          <TableCell>
-                            <span className="text-destructive">{story.initial_score}</span>
-                            <span className="mx-1">→</span>
-                            <span className="text-green-500">{story.final_score}</span>
-                            <span className="text-xs text-muted-foreground ml-1">
-                              (+{story.final_score - story.initial_score})
+                        <TableCell>
+                          <span className="text-destructive">{story.initial_score}</span>
+                          <span className="mx-1">→</span>
+                          <span className="text-success">{story.final_score}</span>
+                          <span className="text-xs text-muted-foreground ml-1">
+                            (+{story.final_score - story.initial_score})
                             </span>
                           </TableCell>
                           <TableCell>{story.timeframe_months} months</TableCell>
@@ -343,10 +308,10 @@ const Admin = () => {
                           <TableCell>
                             <div className="flex gap-2">
                               {!story.is_approved && (
-                                <Button
+                              <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-green-600"
+                                  className="text-success"
                                   onClick={() => handleApproveStory(story.id, true)}
                                 >
                                   <Check className="h-4 w-4" />
