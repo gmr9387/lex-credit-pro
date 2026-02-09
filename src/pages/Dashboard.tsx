@@ -4,7 +4,7 @@ import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut, MessageSquare, Loader2, Settings as SettingsIcon, Zap, Calendar, Calculator, Heart, CalendarDays, Target, Award, DollarSign, Mail, FileCheck, ClipboardList, BarChart3, Trophy, Flame, GraduationCap, FileStack, FileDown } from "lucide-react";
+import { Shield, FileText, TrendingUp, Brain, Upload, AlertCircle, LogOut, MessageSquare, Loader2, Settings as SettingsIcon, Zap, Calendar, Calculator, Heart, CalendarDays, Target, Award, DollarSign, Mail, FileCheck, ClipboardList, BarChart3, Trophy, Flame, GraduationCap, FileStack, FileDown, Crown } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { DisputeGenerator } from "@/components/DisputeGenerator";
@@ -40,6 +40,7 @@ import { CreditEducationQuiz } from "@/components/CreditEducationQuiz";
 import { BatchDisputeGenerator } from "@/components/BatchDisputeGenerator";
 import { CalendarDeadlineView } from "@/components/CalendarDeadlineView";
 import { JourneyReportExport } from "@/components/JourneyReportExport";
+import { PricingSection } from "@/components/PricingSection";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -441,6 +442,10 @@ const Dashboard = () => {
               <FileDown className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>Journey</span>
             </TabsTrigger>
+            <TabsTrigger value="subscription" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Crown className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span>Plans</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="upload" className="space-y-6">
@@ -587,6 +592,16 @@ const Dashboard = () => {
 
           <TabsContent value="journey">
             {user && <JourneyReportExport userId={user.id} />}
+          </TabsContent>
+
+          <TabsContent value="subscription">
+            <div className="space-y-6">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold mb-2">Choose Your Plan</h2>
+                <p className="text-muted-foreground">Upgrade to unlock all premium credit repair features</p>
+              </div>
+              <PricingSection />
+            </div>
           </TabsContent>
         </Tabs>
       </div>
