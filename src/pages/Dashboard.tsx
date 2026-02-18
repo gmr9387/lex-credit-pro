@@ -41,6 +41,7 @@ import { BatchDisputeGenerator } from "@/components/BatchDisputeGenerator";
 import { CalendarDeadlineView } from "@/components/CalendarDeadlineView";
 import { JourneyReportExport } from "@/components/JourneyReportExport";
 import { PricingSection } from "@/components/PricingSection";
+import { ProGate } from "@/components/ProGate";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -538,7 +539,9 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="simulator">
-            <ScoreSimulator />
+            <ProGate featureName="Score Simulator">
+              <ScoreSimulator />
+            </ProGate>
           </TabsContent>
 
           <TabsContent value="builder" className="space-y-6">
@@ -555,7 +558,9 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="goodwill">
-            <GoodwillLetterGenerator />
+            <ProGate featureName="Goodwill Letter Generator">
+              <GoodwillLetterGenerator />
+            </ProGate>
           </TabsContent>
 
           <TabsContent value="responses">
@@ -567,7 +572,9 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="analytics">
-            <AdvancedAnalytics />
+            <ProGate featureName="Advanced Analytics">
+              <AdvancedAnalytics />
+            </ProGate>
           </TabsContent>
 
           <TabsContent value="stories">
@@ -583,7 +590,9 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="batch">
-            {user && <BatchDisputeGenerator userId={user.id} />}
+            <ProGate featureName="Batch Dispute Generator">
+              {user && <BatchDisputeGenerator userId={user.id} />}
+            </ProGate>
           </TabsContent>
 
           <TabsContent value="calendar">
@@ -591,7 +600,9 @@ const Dashboard = () => {
           </TabsContent>
 
           <TabsContent value="journey">
-            {user && <JourneyReportExport userId={user.id} />}
+            <ProGate featureName="Journey Report Export">
+              {user && <JourneyReportExport userId={user.id} />}
+            </ProGate>
           </TabsContent>
 
           <TabsContent value="subscription">
