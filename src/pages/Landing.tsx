@@ -170,7 +170,7 @@ const Landing = () => {
       </div>
 
       {/* Success Stories */}
-      <div className="container mx-auto px-4 py-20">
+      <div id="stories" className="container mx-auto px-4 py-20 scroll-mt-20">
         <SuccessStories />
       </div>
 
