@@ -4,6 +4,7 @@ import { Shield, FileText, TrendingUp, Brain, Lock, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SuccessStories } from "@/components/SuccessStories";
 import { PricingSection } from "@/components/PricingSection";
+import { LandingHeader } from "@/components/LandingHeader";
 
 const Landing = () => {
   const features = [
