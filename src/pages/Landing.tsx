@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Shield, FileText, TrendingUp, Brain, Lock, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SuccessStories } from "@/components/SuccessStories";
+import { PricingSection } from "@/components/PricingSection";
 
 const Landing = () => {
   const features = [
