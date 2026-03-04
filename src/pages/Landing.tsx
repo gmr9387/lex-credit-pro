@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Shield, FileText, TrendingUp, Brain, Lock, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SuccessStories } from "@/components/SuccessStories";
+import { PricingSection } from "@/components/PricingSection";
 
 const Landing = () => {
   const features = [
@@ -69,11 +70,11 @@ const Landing = () => {
           <div className="flex items-center justify-center gap-8 pt-8 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-              No Subscriptions
+              Free &amp; Pro Plans
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-              Free for Personal Use
+              Cancel Anytime
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
@@ -155,6 +156,17 @@ const Landing = () => {
         </div>
       </div>
 
+      {/* Pricing Section */}
+      <div className="container mx-auto px-4 py-20">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Start free and upgrade when you're ready for unlimited power
+          </p>
+        </div>
+        <PricingSection />
+      </div>
+
       {/* Success Stories */}
       <div className="container mx-auto px-4 py-20">
         <SuccessStories />
@@ -167,8 +179,8 @@ const Landing = () => {
             Ready to Take Control?
           </h2>
           <p className="text-lg mb-8 opacity-90 max-w-2xl mx-auto">
-            Join thousands using AI-powered credit repair. Free for personal use, 
-            no subscriptions, completely automated.
+            Join thousands using AI-powered credit repair. Get started for free
+            and upgrade to Pro for unlimited features.
           </p>
           <Button size="lg" variant="secondary" asChild className="text-lg px-8 py-6">
             <Link to="/auth">Start Your Free Account</Link>
@@ -179,8 +191,7 @@ const Landing = () => {
       {/* Footer */}
       <footer className="border-t border-border/50 py-12">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© 2025 Credit Repair AI. Built with enterprise-grade security and compliance.</p>
-          <p className="mt-2">FCRA/FDCPA/CFPB Compliant | Your data never leaves your control</p>
+          <p>© 2026 Credit Repair AI. Built with enterprise-grade security and compliance.</p>
           <div className="flex justify-center gap-6 mt-4">
             <Link to="/terms" className="hover:text-primary transition-colors underline">
               Terms of Service
