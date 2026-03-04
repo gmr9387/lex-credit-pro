@@ -179,8 +179,8 @@ const Landing = () => {
             Ready to Take Control?
           </h2>
           <p className="text-lg mb-8 opacity-90 max-w-2xl mx-auto">
-            Join thousands using AI-powered credit repair. Free for personal use, 
-            no subscriptions, completely automated.
+            Join thousands using AI-powered credit repair. Get started for free
+            and upgrade to Pro for unlimited features.
           </p>
           <Button size="lg" variant="secondary" asChild className="text-lg px-8 py-6">
             <Link to="/auth">Start Your Free Account</Link>
