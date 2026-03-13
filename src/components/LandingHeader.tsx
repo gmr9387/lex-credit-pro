@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Shield, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const LandingHeader = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
