@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Shield, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const LandingHeader = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -30,15 +31,19 @@ export const LandingHeader = () => {
           <button onClick={() => scrollTo("stories")} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
             Success Stories
           </button>
+          <ThemeToggle />
           <Button asChild size="sm">
             <Link to="/auth">Log In</Link>
           </Button>
         </nav>
 
         {/* Mobile toggle */}
-        <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
-          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        <div className="md:hidden flex items-center gap-1">
+          <ThemeToggle />
+          <button className="p-2" onClick={() => setMobileOpen(!mobileOpen)}>
+            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile nav */}
