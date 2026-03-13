@@ -31,6 +31,7 @@ export const LandingHeader = () => {
           <button onClick={() => scrollTo("stories")} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
             Success Stories
           </button>
+          <ThemeToggle />
           <Button asChild size="sm">
             <Link to="/auth">Log In</Link>
           </Button>
